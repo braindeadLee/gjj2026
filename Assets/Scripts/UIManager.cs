@@ -4,14 +4,20 @@ using UnityEngine.Events;
 using TMPro;
 using System.Collections;
 using System;
+using System.Collections.Specialized;
+using Unity.VisualScripting;
 
 public class UIManager : MonoBehaviour
 {
     [Header("UI")]
+    [SerializeField] public GameObject menuUI;
+    [SerializeField] public GameObject gameplayUI;
+    [SerializeField] public Button startButton;
     [SerializeField] public TextMeshProUGUI subtitleText;
     [SerializeField] public TextMeshProUGUI titleText;
+    [SerializeField] public TextMeshProUGUI introducingText;
     [SerializeField] public Button decisionButton;
-    private TextMeshProUGUI decisionText;
+    public TextMeshProUGUI decisionText;
     [SerializeField] public GameObject backgroundObject;
     [SerializeField] public Sprite[] backgrounds;
 
@@ -19,6 +25,7 @@ public class UIManager : MonoBehaviour
     private Color transparent = new Color(0,0,0,0);
 
     [HideInInspector] public UnityEvent introFinished;
+    [HideInInspector] public UnityEvent endingFinished;
 
     public static UIManager Instance {get; private set;}
 
@@ -34,12 +41,17 @@ public class UIManager : MonoBehaviour
 
     public IEnumerator StartingMenu()
     {
-        subtitleText.gameObject.SetActive(true);
-        subtitleText.alpha = 0f;
+        Debug.Log("Starting Menu");
+
+        menuUI.SetActive(true); 
+        gameplayUI.SetActive(false);
+
         titleText.gameObject.SetActive(true);
         titleText.alpha = 0f;
 
         decisionButton.gameObject.SetActive(false);
+        subtitleText.text = String.Empty;
+        introducingText.text = String.Empty;
         backgroundObject.SetActive(true);
         fadeoutObject.SetActive(true);
 
@@ -47,7 +59,6 @@ public class UIManager : MonoBehaviour
         // fadeoutObject.GetComponent<Image>().color = Color.black;
 
         titleText.text = String.Empty;
-        subtitleText.text = String.Empty;
 
         StartCoroutine(Fade(fadeoutObject, Color.black, transparent, 1f));
 
@@ -55,10 +66,6 @@ public class UIManager : MonoBehaviour
         StartCoroutine(Fade(titleText,0f, 1f, 1f));
 
         yield return new WaitForSeconds(1f);
-        fadeoutObject.SetActive(false);
-
-        subtitleText.text = "Click To Start";
-        StartCoroutine(Fade(subtitleText,0f, 1f, 1f));
     }
 
     public void OnStartClick()
@@ -68,33 +75,68 @@ public class UIManager : MonoBehaviour
 
     public IEnumerator StartGameplay()
     {
-        StartCoroutine(Fade(titleText,1f, 0f, 0.5f));
-        StartCoroutine(Fade(subtitleText,1f, 0f, 0.5f));
 
-        subtitleText.gameObject.SetActive(false);
-        titleText.gameObject.SetActive(false);
+        menuUI.SetActive(false); 
+        gameplayUI.SetActive(true);
 
-        fadeoutObject.SetActive(true);
-        StartCoroutine(Fade(fadeoutObject, transparent, Color.black, 0.5f));
-        yield return new WaitForSeconds(0.5f);
+        Debug.Log("Gameplay Menu");
+
+        introducingText.text = String.Empty;
+        introducingText.alpha = 0f;
+        subtitleText.text = String.Empty;
+
+        StartCoroutine(Fade(fadeoutObject, transparent, Color.black, 2f));
+        yield return new WaitForSeconds(3f);
+        titleText.text = String.Empty;
         backgroundObject.GetComponent<Image>().sprite = backgrounds[1];
         StartCoroutine(Fade(fadeoutObject, Color.black, transparent, 0.5f));
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1f);
+        fadeoutObject.SetActive(false);
+        
+        StartCoroutine(Fade(introducingText, 0f, 1f, 2f));
+        introducingText.text = "Start Shift!";
+        yield return new WaitForSeconds(3f);
+        StartCoroutine(Fade(introducingText, 1f, 0f, 0.5f));
 
         introFinished?.Invoke();
     }
 
-    public void showDecideButton()
+    public IEnumerator EndLoopSequence(float delayTime, String endingText, int bgNumber)
     {
-        decisionButton.gameObject.SetActive(true);
+        yield return new WaitForSeconds(delayTime);
+
+        introducingText.alpha = 0f;
+        introducingText.text = "Shift Over!";
+        StartCoroutine(Fade(introducingText, 0f, 1f, 1f));
+        yield return new WaitForSeconds(3f);
+
+        fadeoutObject.SetActive(true);
+        fadeoutObject.GetComponent<Image>().color = Color.clear;
+        StartCoroutine(Fade(fadeoutObject, Color.clear, Color.black, 2.5f));
+        yield return new WaitForSeconds(2.5f);
+        //change background here
+        introducingText.text = String.Empty;
+
+        StartCoroutine(EndingSequence(delayTime, endingText, bgNumber));
     }
 
-    public void decideButtonText(String textToDisplay)
+    public IEnumerator EndingSequence(float delayTime, String endingText, int bgNumber)
     {
-        decisionText.text = textToDisplay;
+        backgroundObject.GetComponent<Image>().sprite = backgrounds[bgNumber];
+        StartCoroutine(Fade(fadeoutObject, Color.black, Color.clear, 2f));
+
+        yield return new WaitForSeconds(delayTime);
+        introducingText.text = endingText;
+
+        yield return new WaitForSeconds(3f);
+        StartCoroutine(Fade(fadeoutObject, Color.clear, Color.black, 2f));
+        yield return new WaitForSeconds(3f);
+        introducingText.text = String.Empty;
+
+        endingFinished?.Invoke();
     }
 
-    private IEnumerator Fade(TextMeshProUGUI text, float value1, float value2, float fadeTime)
+    public IEnumerator Fade(TextMeshProUGUI text, float value1, float value2, float fadeTime)
     {
         text.alpha = value1;
 
@@ -111,7 +153,7 @@ public class UIManager : MonoBehaviour
         text.alpha = value2;
     }
 
-    private IEnumerator Fade(GameObject theObject, Color value1, Color value2, float fadeTime)
+    public IEnumerator Fade(GameObject theObject, Color value1, Color value2, float fadeTime)
     {
         float fadeTimer = 0f;
 
