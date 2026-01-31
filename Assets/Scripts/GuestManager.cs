@@ -11,6 +11,9 @@ using UnityEngine.UIElements;
     public Sprite MaskSprite;
     public bool IsImposter;
     public int specialVoiceline;
+
+    public string title;
+
 }
 public class GuestManager : MonoBehaviour
 {
@@ -34,14 +37,14 @@ public class GuestManager : MonoBehaviour
             Instance = this; 
     }
 
-    void SetGuest(Sprite CharacterSprite, Sprite MaskSprite)
+    public void SetGuest(Sprite CharacterSprite, Sprite MaskSprite)
     {
         Character.GetComponent<SpriteRenderer>().sprite = CharacterSprite;
         Mask.GetComponent<SpriteRenderer>().sprite = MaskSprite;
         
     }
 
-    void EnterGuest(Vector2 startingPosition, Vector2 endPosition, float transitionTime)
+    public void EnterGuest(Vector2 startingPosition, Vector2 endPosition, float transitionTime)
     {
         Guest.transform.position = startingPosition;
         StartCoroutine(GuestIsWalking(startingPosition, endPosition, transitionTime));
