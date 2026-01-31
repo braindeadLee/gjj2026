@@ -32,8 +32,6 @@ public class UIManager : MonoBehaviour
         subtitleText.text = "Click To Start";
     }
 
-
-    
     public IEnumerator startGameplay()
     {
         subtitleText.gameObject.SetActive(false);
@@ -43,5 +41,4 @@ public class UIManager : MonoBehaviour
 
         backgroundObject.GetComponent<Image>().sprite = backgrounds[1];
     }
-
 }
