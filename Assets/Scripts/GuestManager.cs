@@ -77,6 +77,7 @@ public class GuestManager : MonoBehaviour
 
     public IEnumerator GuestIsWalking(Vector2 startingPosition, Vector2 endPosition, float transitionTime)
     {
+        yield return new WaitForSeconds(1f);
         timerIndex = 0;
 
         while(timerIndex < transitionTime)
@@ -96,6 +97,8 @@ public class GuestManager : MonoBehaviour
         Vector3 finishedScale = new Vector3(3.5f,3.5f,3.5f);
 
         Color finishedOpacity = Color.clear;
+
+        AudioManager.Instance.play_SFX("walkingout", AudioCategory.StateSFX, 5f);
 
         while (enterTimer < enterTime)
         {
@@ -120,6 +123,8 @@ public class GuestManager : MonoBehaviour
         Vector3 finishedScale = new Vector3(0.01f, 0.01f, 0.01f);
         Color finishedOpacity = Color.clear;
         Quaternion finishedRot = Quaternion.Euler(0,0,-150);
+
+        AudioManager.Instance.play_SFX("kickout", AudioCategory.StateSFX, 5f);
 
         while(exitTimer < exitTime)
         {

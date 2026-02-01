@@ -1,13 +1,14 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System;
-using UnityEditor.Build;
 
 
 public class Manager : MonoBehaviour
 {
     UIManager uiManager;
     GuestManager guestManager;
+
+    AudioManager audioManager;
 
     [Header("Winning Conditions")]
     private List<int> guestLoadOrder;
@@ -49,22 +50,25 @@ public static Manager Instance {get; private set;}
     {
         uiManager = UIManager.Instance;
         guestManager = GuestManager.Instance;
+        audioManager = AudioManager.Instance;
 
         listOfGuests = guestManager.ListOfGuests;
 
-        uiManager.introFinished.AddListener(GameplayLoop);
-        uiManager.endingFinished.AddListener(StartGameplay);
+        uiManager.endingFinished.AddListener(StartMenu);
 
-        StartGameplay();
+        StartMenu();
     }
 
-    public void StartGameplay()
+    public void StartMenu()
     {
         StartCoroutine(uiManager.StartingMenu());
 
         SetGuestListOrder(guestManager.ListOfGuests.Length);
         listCounter = 0;
         listLength = listOfGuests.Length;
+
+        audioManager.FadeMusic(0.1f, 2f);
+        
     }
 
     private void SetGuestListOrder(int guestNum)
@@ -80,11 +84,36 @@ public static Manager Instance {get; private set;}
         Debug.Log("Randomized order: " + string.Join(", ", guestLoadOrder));
     }
 
-    private System.Collections.IEnumerator StartShift()
+    private System.Collections.IEnumerator SwitchMusic(AudioClip clip, float delay)
     {
 
-        yield return null;
+        audioManager.FadeMusic(0f, delay);
+        yield return new WaitForSeconds(delay);
+        audioManager.SetMusic(clip);
+        audioManager.FadeMusic(0.1f, delay);
+
     }
+
+    // Inside Manager.cs
+
+private void StartGameplay()
+{
+    audioManager.FadeMusic(0f, 1.5f); 
+    
+    StartCoroutine(startGameplayLoop(5f));
+
+}
+
+    private System.Collections.IEnumerator startGameplayLoop(float delayTime)
+    {
+        yield return new WaitForSeconds(delayTime);
+
+        audioManager.SetMusic(audioManager.gamePlay_Music);
+        audioManager.FadeMusic(0.05f, 2f);
+
+        GameplayLoop();
+    }
+
 
     private void GameplayLoop()
     {
@@ -96,15 +125,14 @@ public static Manager Instance {get; private set;}
             listCounter++;
         } else
         {
+
+            audioManager.FadeMusic(0f, 2f);
             if(goodCounter >= goodThreshhold)
                 StartCoroutine(uiManager.EndLoopSequence(1f, "You've been fired!", 1));
             else if(evilCounter >= evilThreshhold)
                 StartCoroutine(uiManager.EndLoopSequence(1f, "The King was killed!", 0));
             else
                 StartCoroutine(uiManager.EndLoopSequence(1f, "The ball was a success!", 1));
-
-            
-            
         }
     }
     private System.Collections.IEnumerator NextGuest(int guestNum)
@@ -112,6 +140,7 @@ public static Manager Instance {get; private set;}
         Debug.Log($"Guest {listCounter}, {listOfGuests[guestNum].title}. Imposter? {listOfGuests[guestNum].IsImposter}");
         guestManager.SetGuest(listOfGuests[guestNum].CharacterSprite, listOfGuests[guestNum].MaskSprite);
         guestManager.EnterGuest(npcStartPosition.transform.position, npcEndPosition.transform.position, 1.5f);
+        AudioManager.Instance.play_SFX("walkingin", AudioCategory.StateSFX, 2f);
         yield return new WaitForSeconds(1.5f);
 
         uiManager.introducingText.text = listOfGuests[guestNum].title;
@@ -122,8 +151,7 @@ public static Manager Instance {get; private set;}
         uiManager.decisionText.text = "Let Him In?";
 
 
-        StartCoroutine(Decisions(1f));
-        
+        StartCoroutine(Decisions(2f));
     }
 
 //If decision button is pressed
