@@ -70,13 +70,12 @@ public class UIManager : MonoBehaviour
 
     public void OnStartClick()
     {
-        StartCoroutine(StartGameplay());
+        StartCoroutine(StartGameplay(3f));
     }
 
-    public IEnumerator StartGameplay()
+    public IEnumerator StartGameplay(float delayTime)
     {
 
-        menuUI.SetActive(false); 
         gameplayUI.SetActive(true);
 
         Debug.Log("Gameplay Menu");
@@ -87,10 +86,10 @@ public class UIManager : MonoBehaviour
 
         StartCoroutine(Fade(fadeoutObject, transparent, Color.black, 2f));
         yield return new WaitForSeconds(3f);
-        titleText.text = String.Empty;
+        menuUI.SetActive(false); 
         backgroundObject.GetComponent<Image>().sprite = backgrounds[1];
         StartCoroutine(Fade(fadeoutObject, Color.black, transparent, 0.5f));
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(delayTime);
         fadeoutObject.SetActive(false);
         
         StartCoroutine(Fade(introducingText, 0f, 1f, 2f));

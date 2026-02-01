@@ -1,6 +1,15 @@
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Linq;
+using System;
+
+[Serializable]
+public struct AudioFile
+{
+    public AudioClip audio;
+    public string name;
+}
 
 public class AudioManager : MonoBehaviour
 {
@@ -12,12 +21,8 @@ public class AudioManager : MonoBehaviour
     [Header("----------SFX----------")]
     public AudioClip gamePlay_Music;
     public AudioClip menu_Music;
-    public AudioClip[] voice_Lines;
-    public AudioClip[] generic_Comments;
-    public AudioClip[] special_Comments;
-    public AudioClip[] state_SFX; /*Game State like Game Over, Victory, and Cue*/
-    public AudioClip[] npc_Movement;
-    public AudioClip[] button_SFX;
+    public AudioFile[] voice_Lines;
+    public AudioFile[] state_SFX; /*Game State like Game Over, Victory, and Cue*/
 
     private bool inMenu = false;
 
@@ -43,10 +48,20 @@ public class AudioManager : MonoBehaviour
 
     }
 
-    public void play_SFX(AudioClip clip)
+    public void play_SFX(string clipName)
+{
+    // Find the first struct where the name matches
+    AudioFile file = voice_Lines.FirstOrDefault(f => f.name == clipName);
+
+    if (file.audio != null)
     {
-        SFXSource.PlayOneShot(clip);
+        SFXSource.PlayOneShot(file.audio);
     }
+    else
+    {
+        Debug.LogWarning($"Audio file '{clipName}' not found!");
+    }
+}
 
     public void pause_SFX_MS()
     {

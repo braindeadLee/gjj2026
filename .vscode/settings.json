@@ -67,5 +67,5 @@
         "*.sln": "*.csproj",
         "*.slnx": "*.csproj"
     },
-    "dotnet.defaultSolution": "gjj2026.slnx"
+    "dotnet.defaultSolution": "ggj2026-2d.slnx"
 }
