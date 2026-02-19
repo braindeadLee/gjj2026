@@ -1,19 +1,10 @@
 fileFormatVersion: 2
-guid: 4dfb3ff512c8357bf9587bdb196d1779
+guid: fae9546e15c97e3d7b3b5cbc548e0fa5
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 8873511964195079018
-    second: start opening-Sheet_0
-  - first:
-      213: 3980763104297413063
-    second: start opening-Sheet_1
-  - first:
-      213: -8858958452974463504
-    second: start opening-Sheet_2
-  - first:
-      213: 9009398839434719800
-    second: start opening-Sheet_3
+      213: 6345174939179137472
+    second: helmet-Sheet_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -122,89 +113,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: start opening-Sheet_0
+      name: helmet-Sheet_0
       rect:
         serializedVersion: 2
-        x: 4
-        y: 4
-        width: 47
-        height: 38
+        x: 9
+        y: 9
+        width: 105
+        height: 58
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a63c6081e1c052b70800000000000000
-      internalID: 8873511964195079018
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: start opening-Sheet_1
-      rect:
-        serializedVersion: 2
-        x: 54
-        y: 3
-        width: 47
-        height: 39
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 7c9e0aec3f28e3730800000000000000
-      internalID: 3980763104297413063
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: start opening-Sheet_2
-      rect:
-        serializedVersion: 2
-        x: 104
-        y: 4
-        width: 47
-        height: 38
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 0f5538a4938ae0580800000000000000
-      internalID: -8858958452974463504
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: start opening-Sheet_3
-      rect:
-        serializedVersion: 2
-        x: 154
-        y: 4
-        width: 47
-        height: 38
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 832b258b280d70d70800000000000000
-      internalID: 9009398839434719800
+      spriteID: 0c9bb7f2df69e0850800000000000000
+      internalID: 6345174939179137472
       vertices: []
       indices: 
       edges: []
@@ -213,7 +138,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: a27c4010cdba213f69336c66cfc621ef
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -223,10 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      start opening-Sheet_0: 8873511964195079018
-      start opening-Sheet_1: 3980763104297413063
-      start opening-Sheet_2: -8858958452974463504
-      start opening-Sheet_3: 9009398839434719800
+      helmet-Sheet_0: 6345174939179137472
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

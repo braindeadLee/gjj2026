@@ -125,12 +125,13 @@ public class GuestManager : MonoBehaviour
         Quaternion finishedRot = Quaternion.Euler(0,0,-150);
 
         AudioManager.Instance.play_SFX("kickout", AudioCategory.StateSFX, 5f);
+        StartCoroutine(UIManager.Instance.bootTime(1.5f));
 
         while(exitTimer < exitTime)
         {
             float t = exitTimer / exitTime;
 
-            Guest.transform.localScale = Vector3.Lerp(startingScale, finishedScale, t/2);
+            Guest.transform.localScale = Vector3.Lerp(startingScale, finishedScale, t);
             Guest.transform.rotation = Quaternion.Lerp(startingRotation, finishedRot, t);
             maskSpriteRenderer.color = Color.Lerp(startingColor, finishedOpacity, t);
             characterSpriteRenderer.color = Color.Lerp(startingColor, finishedOpacity, t);

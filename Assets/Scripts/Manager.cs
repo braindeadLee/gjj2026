@@ -1,6 +1,8 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections.Generic;
 using System;
+// using Microsoft.Unity.VisualStudio.Editor;
 
 
 public class Manager : MonoBehaviour
@@ -14,6 +16,8 @@ public class Manager : MonoBehaviour
     private List<int> guestLoadOrder;
     private int listLength;
     private int listCounter = 0;
+
+    bool letin = false;
     
 
     [Header("Game Rules")]
@@ -128,15 +132,19 @@ private void StartGameplay()
 
             audioManager.FadeMusic(0f, 2f);
             if(goodCounter >= goodThreshhold)
-                StartCoroutine(uiManager.EndLoopSequence(1f, "You've been fired!", 1));
-            else if(evilCounter >= evilThreshhold)
-                StartCoroutine(uiManager.EndLoopSequence(1f, "The King was killed!", 0));
-            else
-                StartCoroutine(uiManager.EndLoopSequence(1f, "The ball was a success!", 1));
+                StartCoroutine(uiManager.EndLoopSequence(1f, "You've been fired!", 4));
+            if(evilCounter >= evilThreshhold)
+                StartCoroutine(uiManager.EndLoopSequence(1f, "The King was killed!", 3));
+            if(goodCounter < goodThreshhold && evilCounter < evilThreshhold)
+                StartCoroutine(uiManager.EndLoopSequence(1f, "The ball was a success!", 2));
+
+            goodCounter = evilCounter = 0;
         }
     }
     private System.Collections.IEnumerator NextGuest(int guestNum)
     {
+        
+        StartCoroutine(subtitleAndAudio(4, 2f, 1f));
         Debug.Log($"Guest {listCounter}, {listOfGuests[guestNum].title}. Imposter? {listOfGuests[guestNum].IsImposter}");
         guestManager.SetGuest(listOfGuests[guestNum].CharacterSprite, listOfGuests[guestNum].MaskSprite);
         guestManager.EnterGuest(npcStartPosition.transform.position, npcEndPosition.transform.position, 1.5f);
@@ -146,42 +154,61 @@ private void StartGameplay()
         uiManager.introducingText.text = listOfGuests[guestNum].title;
         StartCoroutine(uiManager.Fade(uiManager.introducingText, 0f, 1f, 1f));
 
-        yield return new WaitForSeconds(1.5f);
-        uiManager.decisionButton.gameObject.SetActive(true);
-        uiManager.decisionText.text = "Let Him In?";
-
-
         StartCoroutine(Decisions(2f));
     }
 
 //If decision button is pressed
-    public void MakeDecision()
+    public void MakeDecisionLetIn()
     {
         decisionMade = true;
+        letin = true;
+
+    }
+
+    public void MakeDecisionKickOut()
+    {
+        decisionMade = true;
+        letin = false;
     }
 
     System.Collections.IEnumerator Decisions(float prepTime)
     {
         yield return new WaitForSeconds(prepTime);
 
+        uiManager.decisionButton1.enabled = true;
+        uiManager.decisionButton1.GetComponent<Image>().enabled = true;
+        uiManager.decisionButton2.enabled = true;
+        uiManager.decisionButton2.GetComponent<Image>().enabled = true;
+
+        uiManager.decisionText.text = String.Empty;
+
         timerToDecide = timeToDecide;
         decisionMade = false;
+        letin = false;
 
         while(timerToDecide > 0)
         {
             timerToDecide -= Time.deltaTime;
-            uiManager.decisionText.text = "Let Him In?" + Mathf.Round(timerToDecide);
+            uiManager.decisionText.text = "" + Mathf.Round(timerToDecide);
 
             if(decisionMade == true)
             {
-                StartCoroutine(GuestWasKicked());
+                uiManager.decisionText.text = String.Empty;
+                if(letin)
+                    StartCoroutine(GuestWasLetIn());
+                else
+                    StartCoroutine(GuestWasKicked());
                 yield break;
             }
 
             yield return null;
         }
 
-        StartCoroutine(GuestWasLetIn());
+        uiManager.decisionText.text = String.Empty;
+        if(letin)
+               StartCoroutine(GuestWasLetIn());
+            else
+                StartCoroutine(GuestWasKicked());
     }
 
     private System.Collections.IEnumerator GuestWasKicked()
@@ -195,15 +222,23 @@ private void StartGameplay()
         }
 
         StartCoroutine(uiManager.Fade(uiManager.introducingText, 1f, 0f, 0.5f));
-        uiManager.decisionButton.gameObject.SetActive(false);
+
+        int line = UnityEngine.Random.Range(0, 1) + 2;
+        StartCoroutine(subtitleAndAudio(line, 2f, 0f));
+
+        uiManager.decisionButton1.enabled = false;
+        uiManager.decisionButton1.GetComponent<Image>().enabled = false;
+        uiManager.decisionButton2.enabled = false;
+        uiManager.decisionButton2.GetComponent<Image>().enabled = false;
+
+        uiManager.subtitleText.alpha = 1f;
         uiManager.subtitleText.text = "Off with ya now!";
         yield return new WaitForSeconds(2f);
         uiManager.subtitleText.text = String.Empty;
-        StartCoroutine(guestManager.KickOutGuest(0.7f));
+        StartCoroutine(guestManager.KickOutGuest(0.6f));
 
         yield return new WaitForSeconds(2f);
         GameplayLoop();
-
     }
 
     private System.Collections.IEnumerator GuestWasLetIn()
@@ -215,16 +250,38 @@ private void StartGameplay()
             Debug.Log("Let in an assassin!");
             evilCounter++;
         }
+
+        int line = UnityEngine.Random.Range(0, 1);
+        StartCoroutine(subtitleAndAudio(line, 2f, 0f));
         
         StartCoroutine(uiManager.Fade(uiManager.introducingText, 1f, 0f, 0.5f));
-        uiManager.decisionButton.gameObject.SetActive(false);
+
+        uiManager.decisionButton1.enabled = false;
+        uiManager.decisionButton1.GetComponent<Image>().enabled = false;
+        uiManager.decisionButton2.enabled = false;
+        uiManager.decisionButton2.GetComponent<Image>().enabled = false;
+
+        uiManager.subtitleText.alpha = 1f;
         uiManager.subtitleText.text = "Alright, off you go...";
         yield return new WaitForSeconds(2f);
         uiManager.subtitleText.text = String.Empty;
+        audioManager.play_SFX("dooropen", AudioCategory.StateSFX, 1f);
         StartCoroutine(guestManager.LetInGuest(2f));
 
         yield return new WaitForSeconds(2f);
         GameplayLoop();
+    }
+
+    private System.Collections.IEnumerator subtitleAndAudio(int num, float subtitleStayTime, float subtitleDelay = 0f)
+    {
+
+        String voicename = audioManager.voiceAndSubs[num].name;
+        String subtext = audioManager.voiceAndSubs[num].line;
+        audioManager.play_SFX(voicename, AudioCategory.VoiceLines, 2f);
+    yield return new WaitForSeconds(subtitleDelay);
+        uiManager.subtitleText.text = subtext;
+        yield return new WaitForSeconds(subtitleStayTime);
+        uiManager.subtitleText.text = String.Empty;
     }
 
 }

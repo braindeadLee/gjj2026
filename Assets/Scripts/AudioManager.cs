@@ -12,6 +12,13 @@ public struct AudioFile
     public string name;
 }
 
+[Serializable]
+public struct lineAndSub
+{
+    public string name;
+    public string line;
+}
+
 public enum AudioCategory
 {
     VoiceLines,
@@ -30,7 +37,9 @@ public class AudioManager : MonoBehaviour
     public AudioClip menu_Music;
     public AudioClip intro_Music;
     public AudioFile[] voice_Lines;
-    public AudioFile[] state_SFX; /*Game State like Game Over, Victory, and Cue*/
+    public AudioFile[] state_SFX; 
+    
+    public lineAndSub[] voiceAndSubs;/*Game State like Game Over, Victory, and Cue*/
 
     private bool inMenu = false;
 
@@ -50,6 +59,7 @@ public class AudioManager : MonoBehaviour
     {
         musicSource.clip = menu_Music;
         musicSource.volume = 0f;
+        musicSource.loop = true;
         musicSource.Play();
     }
 
