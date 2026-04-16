@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca3d75bc4e9299f438190fee98b8b9c6, type: 3}
+  m_Name: TestMask2
+  m_EditorClassIdentifier: Assembly-CSharp::Item
+  itemName: 
+  itemType: 0
+  itemSprite: {fileID: 4049066064457822990, guid: 23f22880a12d9c72bbceb23cf2c04b52, type: 3}
+  alignmentOffset: {x: 0, y: 0}
+  attributes:
+  - {fileID: 11400000, guid: b306cda60e53c5709a2f839e5290652f, type: 2}
+  - {fileID: 11400000, guid: 04c3773ceb72b6dc9a976c096ec07de5, type: 2}
+  - {fileID: 11400000, guid: 3b58b34d03a4b4939b24125dda34f78e, type: 2}
