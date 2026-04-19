@@ -8,5 +8,4 @@ public class ItemSO : ScriptableObject
     public ItemType itemType;
     public Sprite itemSprite;
     public Vector2 alignmentOffset;
-    public List<AttributeSO> attributes;
 }

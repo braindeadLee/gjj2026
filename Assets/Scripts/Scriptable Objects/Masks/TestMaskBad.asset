@@ -9,14 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ca3d75bc4e9299f438190fee98b8b9c6, type: 3}
-  m_Name: TestMask1
-  m_EditorClassIdentifier: Assembly-CSharp::Item
-  itemName: Test Mask 1
+  m_Script: {fileID: 11500000, guid: 919f05718cd7db3b7a5485106bd6bfec, type: 3}
+  m_Name: TestMaskBad
+  m_EditorClassIdentifier: Assembly-CSharp::MaskSO
+  itemName: Bad Mask
   itemType: 0
   itemSprite: {fileID: 4049066064457822990, guid: 23f22880a12d9c72bbceb23cf2c04b52, type: 3}
   alignmentOffset: {x: 0, y: 0}
-  attributes:
-  - {fileID: 11400000, guid: d022a49efdb609e95ba1f4487c8622b2, type: 2}
-  - {fileID: 11400000, guid: f28592a6583b58c69a153a0bbcfcca44, type: 2}
-  - {fileID: 11400000, guid: a27a9ae31cf7ce28887b3baeb0941989, type: 2}
+  color: {fileID: 11400000, guid: 01c03c954c3de1dfeacd36e28377443b, type: 2}
+  quality: {fileID: 11400000, guid: 04c3773ceb72b6dc9a976c096ec07de5, type: 2}
+  theme: {fileID: 11400000, guid: d022a49efdb609e95ba1f4487c8622b2, type: 2}
