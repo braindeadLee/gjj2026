@@ -1,0 +1,182 @@
+@startuml IM MASKERING IT, IM MASQERAIDING IT, UOGHGHH!!!
+skinparam backgroundColor #FEFEFE
+skinparam classBackgroundColor #F0F0F0
+skinparam classBorderColor #333333
+
+
+enum ItemType{
+    MASK
+    RULE
+    LETTER
+}
+
+enum RuleType{
+    COLOR
+    QUALITY
+    THEME
+    INSIGNIA
+}
+
+enum CursorMode{
+    NORMAL
+    INSPECTING
+}
+
+struct ItemAttribute{
+    RuleType ruleType
+    string actualValue
+}
+
+struct InspectionZone{
+    RectTransform rectTransform
+    Button button
+    ItemAttribute attribute
+}
+
+class Item extends ScriptableObject{
+    +string itemName
+    +ItemType itemType
+    +Sprite itemSprite
+    Vector2 alignmentOffset
+    +List<ItemAttribute> itemAttributes
+}
+
+class Guest extends ScriptableObject{
+    +string guestName
+    +Sprite guestSprite
+    +bool isLegit
+    +bool willFight
+    +TextAsset dialogue
+}
+
+class MaskDisplay{
+    +Item itemAssigned
+    +RectTransform rectTransform
+    +Image im
+    +List<InspectionZone> inspectionZones 
+}
+
+class GuestDisplay{
+    +MaskDisplay maskAssigned
+    +RectTransform rectTransform
+    +Image im
+    +Vector2 maskPivot
+}
+
+class GuestItemManager <<MonoBehaviour>> {
+    + static Instance: GuestItemManager
+    + inspectionMode: bool
+    + SetupMask(maskSO: Item, parentPanel: RectTransform): GameObject
+    + SetupGuest(guestSO: Guest, maskSO: Item): GameObject
+    + SpawnMask()
+    + SpawnGuest()
+    + ToggleInspectionMode(value: bool)
+}
+
+class macroManager{
+    +macroState initialState
+    +macroStateMachine stateMachine
+    +macroMenuState menuState
+    macroGameplayState gameplayState
+}
+
+class macroState {
+    +macroManager
+    +macroStateMachine
+    void EnterState()
+    + void ExitState()
+    + void FrameUpdate()
+    + void PhysicsUpdate()
+    + void AnimationTriggerEvent(Enemy.AnimationTriggerType triggerType)
+}
+
+class macroStateMachine{
+    +macroState currentState
+    + void Initialize(macroState startingState)
+    + void ChangeState(macroState newState)
+}
+
+class macroMenuState extends macroState{
+}
+
+class macroGameplayState extends macroState{
+}
+
+class microManager{
+    +microState initialState
+    +microStateMachine stateMachine
+    +microCutsceneState cutsceneState
+    +microInstructionsState instructionsState
+    +microNextGuestState nextGuestState
+    +microInspectionState inspectionState
+    +microDecisionState decisionState
+    +MaskDisplay maskDisplay
+    +GuestDisplay guestDisplay
+}
+
+
+class microState{
+    +microManager
+    +microStateMachine
+    void EnterState()
+    + void ExitState()
+    + void FrameUpdate()
+    + void PhysicsUpdate()
+    + void AnimationTriggerEvent(Enemy.AnimationTriggerType triggerType)
+}
+
+class microStateMachine{
+    +microState currentState
+    + void Initialize(microState startingState)
+    + void ChangeState(microState newState)
+}
+
+
+class microCutsceneState extends microState{
+}
+
+class microInstructionsState extends microState{
+}
+
+class microNextGuestState extends microState{
+}
+
+class microInspectionState extends microState{
+    +CursorMode currentCursorMode
+    +void mouseShootRaycasts()
+}
+
+class microDecisionState extends microState{
+}
+
+macroManager --> macroStateMachine : has
+macroStateMachine --> macroState : manages
+macroState --> macroStateMachine : uses
+macroGameplayState --> microManager : enables
+
+microManager --> microStateMachine : has
+microManager --> GuestDisplay : has
+microManager --> MaskDisplay : has
+MaskDisplay --> InspectionZone : has
+MaskDisplay --> ItemType : has
+MaskDisplay *--> Item : displays
+InspectionZone --> ItemAttribute : has
+ItemAttribute --> RuleType : has
+GuestDisplay --> MaskDisplay : has
+GuestDisplay *--> Guest : displays
+microStateMachine -down-> microState : manages
+microState -up-> microStateMachine : uses
+microInspectionState --> CursorMode : uses
+
+microDecisionState --> GuestItemManager : utilizes
+microInspectionState --> GuestItemManager : utilizes
+microNextGuestState --> GuestItemManager : utilizes
+
+' Gameplay flow actual
+microCutsceneState -right-> microInstructionsState 
+microInstructionsState -right-> microNextGuestState
+microNextGuestState -right-> microInspectionState
+microInspectionState -right-> microDecisionState
+microDecisionState -up-> microNextGuestState : loops
+
+@enduml

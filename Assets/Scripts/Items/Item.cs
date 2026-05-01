@@ -11,7 +11,7 @@ public class Item : MonoBehaviour, IDragHandler, IPointerDownHandler, IBeginDrag
     protected Transform tr;
     protected Image im;
     // public List<InspectionZone> inspectionZones;
-    public RectTransform _dragRectTransform;
+    public RectTransform rt;
     public Canvas canvas;
 
     public CanvasGroup canvasGroup;
@@ -24,13 +24,12 @@ public class Item : MonoBehaviour, IDragHandler, IPointerDownHandler, IBeginDrag
     {
         tr = GetComponent<Transform>();
         im = GetComponent<Image>();
+        rt = GetComponent<RectTransform>();
         im.SetNativeSize();
 
-        if (_dragRectTransform == null)
-            _dragRectTransform = transform.parent.GetComponent<RectTransform>();
         
         if (canvasGroup == null)
-            canvasGroup = _dragRectTransform.GetComponent<CanvasGroup>();
+            canvasGroup = rt.GetComponent<CanvasGroup>();
         
 
         if (canvas == null)
@@ -82,13 +81,13 @@ public class Item : MonoBehaviour, IDragHandler, IPointerDownHandler, IBeginDrag
     {
         if (!canDrag) return;
         {
-            _dragRectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor;
+            rt.anchoredPosition += eventData.delta / canvas.scaleFactor;
         }
     }
         
     public void OnPointerDown(PointerEventData eventData)
     {
-        _dragRectTransform.SetAsLastSibling();
+        rt.SetAsLastSibling();
     }
 
     public void OnBeginDrag(PointerEventData eventData)

@@ -26,7 +26,8 @@ public class GuestItemManager : MonoBehaviour
     [SerializeField] private GuestSO[] guestSOArray;
     [SerializeField] private RectTransform guestsPanel;
 
-    private List<GameObject> activeGuests = new List<GameObject>();
+    // private List<GameObject> activeGuests = new List<GameObject>();
+    private GameObject activeGuest;
     #endregion
 
     #region Debugging
@@ -134,7 +135,6 @@ public class GuestItemManager : MonoBehaviour
 
                 maskRect.anchoredPosition = maskSO.alignmentOffset;
             
-
             return newGuest;
         }
 
@@ -183,7 +183,7 @@ public class GuestItemManager : MonoBehaviour
             GuestSO randomGuestSO = guestSOArray[Random.Range(0, guestSOArray.Length)];
             MaskSO randomMaskSO = maskSOArray[Random.Range(0, maskSOArray.Length)];
             newGuest = SetupGuest(randomGuestSO, randomMaskSO);
-            activeGuests.Add(newGuest);
+            activeGuest = newGuest;
 
             TeleportUIElement(newGuest, -500f, 0f);
             StartCoroutine(MoveUIElement(newGuest, 0f, 0f, 3f));
@@ -196,7 +196,22 @@ public class GuestItemManager : MonoBehaviour
 
     public void TransferMask()
     {
-        
+        if(activeGuest != null)
+        {
+            Guest currentGuest = activeGuest.GetComponent<Guest>();
+            Item_Mask maskTransferee = currentGuest.maskPinRect.GetComponentInChildren<Item_Mask>();
+            if(maskTransferee != null)
+            {
+                maskTransferee.transform.SetParent(tablePanel, true);
+                maskTransferee.ToggleDraggable(true);
+                maskTransferee.ToggleInspectable(false);
+                maskTransferee.rt.SetAsLastSibling();
+                activeMasks.Add(maskTransferee.GameObject());
+
+                TeleportUIElement(maskTransferee.gameObject, 0f, 0f);
+
+            }
+        }
     }
     #endregion
 
@@ -223,5 +238,36 @@ public class GuestItemManager : MonoBehaviour
             yield return null;
         }
     }
+
+    public System.Collections.IEnumerator ScaleUIElement(GameObject scalee, Vector3 endScale, float timeInSeconds)
+    {
+        float timer = 0f;
+        RectTransform rect = scalee.GetComponent<RectTransform>();
+        Vector3 startScale = rect.anchoredPosition;
+
+        while(timer < timeInSeconds)
+        {
+            rect.localScale = Vector3.Lerp(startScale, endScale, timer/timeInSeconds);
+
+            timer += Time.deltaTime;
+            yield return null;
+        }
+    }
+
+    public System.Collections.IEnumerator ColorUIElement(GameObject coloree, Color endColor, float timeInSeconds)
+    {
+        float timer = 0f;
+        Image im = coloree.GetComponent<Image>();
+        Color startColor = im.color;
+
+        while(timer < timeInSeconds)
+        {
+            im.color = Color.Lerp(startColor, endColor, timer/timeInSeconds);
+
+            timer += Time.deltaTime;
+            yield return null;
+        }
+    }
+
     #endregion
 }

@@ -1,3 +1,11 @@
+/*
+Rules
+1. Guest list comes in a predetermined orde
+2. Only one guest can be present at a time
+3. Only one mask can be present at a time
+4. The rule book must be present
+
+*/
 using UnityEngine;
 
 public class MicroManager : MonoBehaviour

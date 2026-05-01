@@ -1,6 +1,5 @@
 using UnityEngine;
 
-
 public enum ItemType{
     MASK,
     RULE,
@@ -30,4 +29,11 @@ public enum CursorMode{
 public struct InspectionZone{
     public BoxCollider2D collider;
     public AttributeSO attributeValue;
+}
+
+[System.Serializable]
+public struct GuestMaskPair
+{
+    public MaskSO mask;
+    public GuestSO guest;
 }

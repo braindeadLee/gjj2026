@@ -4,7 +4,7 @@ using UnityEngine.UI;
 public class Item_Mask : Item
 {
     private Button maskAttributeZone;
-    private MaskSO maskAssigned;
+    [SerializeField] private MaskSO maskAssigned;
 
     private bool isAttachedToGuest;
 
