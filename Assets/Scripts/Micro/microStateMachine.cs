@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class MicroStateMachine : MonoBehaviour
+public class MicroStateMachine
 {
     public MicroState currentState {get; set;}
 

@@ -7,17 +7,19 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Image))]
 public class Item : MonoBehaviour, IDragHandler, IPointerDownHandler, IBeginDragHandler, IEndDragHandler
 {
-    public GuestItemManager guestItemManager;
+    [HideInInspector] public GuestItemManager guestItemManager;
     protected Transform tr;
     protected Image im;
     // public List<InspectionZone> inspectionZones;
-    public RectTransform rt;
-    public Canvas canvas;
+    [HideInInspector] public RectTransform rt;
+    [HideInInspector] public Canvas canvas;
 
-    public CanvasGroup canvasGroup;
+    [HideInInspector] public CanvasGroup canvasGroup;
 
-    private bool canDrag;
-    private bool canInspect;
+    private bool canDrag = false;
+
+    //not needed since inspection relies on button enabling anyways
+    // private bool canInspect = true;
     // public ItemSO itemAssigned;
 
     public virtual void Awake()
@@ -50,6 +52,7 @@ public class Item : MonoBehaviour, IDragHandler, IPointerDownHandler, IBeginDrag
         {
             guestItemManager = GuestItemManager.Instance;
         }
+        
     }
 
     public virtual void Initialize(ItemSO itemSO)

@@ -3,8 +3,11 @@ using UnityEngine.UI;
 
 public class Item_Mask : Item
 {
-    private Button maskAttributeZone;
-    [SerializeField] private MaskSO maskAssigned;
+    [Header("Attribute Zones")]
+    [SerializeField] private Button maskAttributeZone;
+
+    [Header("Data")]
+    [SerializeField] [HideInInspector] private MaskSO maskAssigned;
 
     private bool isAttachedToGuest;
 
@@ -12,15 +15,13 @@ public class Item_Mask : Item
     {
         base.Awake();
 
-        maskAttributeZone = transform.Find("MaskAttributeZone").GetComponent<Button>();
-
         if (maskAttributeZone != null)
         {
-            maskAttributeZone.enabled = true;
             maskAttributeZone.onClick.AddListener(maskAttributeZoneClicked);
-        } else
+        } 
+        else
         {
-            Debug.LogWarning("MaskAttributeZone button not found on " + gameObject.name);
+            Debug.LogWarning("MaskAttributeZone missing on " + gameObject.name + ". Please assign it in the Inspector!");
         }
     }
 
@@ -31,7 +32,10 @@ public class Item_Mask : Item
 
     public void OnDisable()
     {
-        maskAttributeZone.onClick.RemoveListener(maskAttributeZoneClicked);
+        if (maskAttributeZone != null)
+        {
+            maskAttributeZone.onClick.RemoveListener(maskAttributeZoneClicked);
+        }
     }
 
     public void Initialize(MaskSO maskSO)
@@ -39,7 +43,7 @@ public class Item_Mask : Item
         base.Initialize(maskSO);
         maskAssigned = maskSO;
     }
-
+[HideInInspector] 
     public void maskAttributeZoneClicked()
     {
         if(maskAssigned != null)
@@ -47,9 +51,18 @@ public class Item_Mask : Item
             Debug.Log($"Mask's color: " + maskAssigned.color.displayName);
             Debug.Log($"Mask's quality: " + maskAssigned.quality.displayName);
             Debug.Log($"Mask's theme: " + maskAssigned.theme.displayName);
-        } else
+        } 
+        else
         {
             Debug.Log("No mask assigned to this item.");
         }
     }
+
+#if UNITY_EDITOR
+    private void Reset()
+    {
+        //auto-fills designated button slot if name match
+        maskAttributeZone = transform.Find("MaskAttributeZone")?.GetComponent<Button>();
+    }
+#endif
 }

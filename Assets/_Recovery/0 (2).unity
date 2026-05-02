@@ -252,7 +252,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GuestItemManager
   canvas: {fileID: 1441681273}
   inspectionMode: 0
-  itemsCanvas: {fileID: 1441681274}
   _maskPrefab: {fileID: 8754040682024787636, guid: 5d38463591835214b80d055be065b7b8, type: 3}
   maskSOArray:
   - {fileID: 11400000, guid: aad1d06ccc652a5ae86d62a6f779566c, type: 2}
@@ -265,8 +264,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 25f9afaf45b60af1ba4e5c6aed95c0a1, type: 2}
   - {fileID: 11400000, guid: 928b2ae869d61a955b8b5505373e2358, type: 2}
   guestsPanel: {fileID: 1624110739}
-  _sorPrefab: {fileID: 0}
-  sorSOArray: []
   debugToggleInspectionButton: {fileID: 2093504230}
   debugSpawnMaskButton: {fileID: 1417205405}
   debugSpawnGuestButton: {fileID: 525937453}

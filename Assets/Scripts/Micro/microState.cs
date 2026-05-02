@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class MicroState : MonoBehaviour
+public class MicroState
 {
     protected MicroManager manager;
     protected MicroStateMachine stateMachine;

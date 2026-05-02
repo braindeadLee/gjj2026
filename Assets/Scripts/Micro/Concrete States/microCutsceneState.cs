@@ -9,7 +9,6 @@ public class MicroCutsceneState : MicroState
     public override void EnterState()
     {
         base.EnterState();
-
         stateMachine.ChangeState(manager.InstructionsState);
     }
     public override void ExitState()

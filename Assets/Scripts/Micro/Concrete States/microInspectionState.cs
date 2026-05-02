@@ -9,6 +9,7 @@ public class MicroInspectionState : MicroState
     public override void EnterState()
     {
         base.EnterState();
+        Debug.Log("Entered Inspection State");
     }
     public override void ExitState()
     {
