@@ -56,7 +56,8 @@ public class Item_SOR : Item
     {
         if(scrollAssigned != null)
 
-            Debug.Log($"Scroll's color: " + scrollAssigned.color[0].displayName);
+            GuestItemManager.Instance.SelectAttributeForInspection(scrollAssigned.color, this);
+
         else
             Debug.Log("No color rule assigned to this scroll.");
     }
@@ -64,7 +65,7 @@ public class Item_SOR : Item
     public void QualityAttributeZoneClicked()
     {
         if(scrollAssigned != null)
-            Debug.Log($"Scroll's quality: " + scrollAssigned.quality[0].displayName);
+            GuestItemManager.Instance.SelectAttributeForInspection(scrollAssigned.quality, this);
         else
             Debug.Log("No quality rule assigned to this scroll.");
     }
@@ -72,7 +73,7 @@ public class Item_SOR : Item
     public void ThemeAttributeZoneClicked()
     {
         if(scrollAssigned != null)
-            Debug.Log($"Scroll's theme: " + scrollAssigned.theme[0].displayName);
+            GuestItemManager.Instance.SelectAttributeForInspection(scrollAssigned.theme, this);
         else
             Debug.Log("No theme rule assigned to this scroll.");
     }

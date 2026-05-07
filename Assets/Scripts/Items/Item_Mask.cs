@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -47,15 +48,9 @@ public class Item_Mask : Item
     public void maskAttributeZoneClicked()
     {
         if(maskAssigned != null)
-        {
-            Debug.Log($"Mask's color: " + maskAssigned.color.displayName);
-            Debug.Log($"Mask's quality: " + maskAssigned.quality.displayName);
-            Debug.Log($"Mask's theme: " + maskAssigned.theme.displayName);
-        } 
+            GuestItemManager.Instance.SelectAttributeForInspection(new AttributeSO[] { maskAssigned.color, maskAssigned.quality, maskAssigned.theme }, this);
         else
-        {
             Debug.Log("No mask assigned to this item.");
-        }
     }
 
 #if UNITY_EDITOR

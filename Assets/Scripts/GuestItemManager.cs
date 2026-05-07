@@ -41,12 +41,17 @@ public class GuestItemManager : MonoBehaviour
 
     [SerializeField] private GameObject _sorPrefab;
     [SerializeField] private SorSO[] sorSOArray;
+    private GameObject activeSOR;
 
     #endregion
 
     #region Inspection
-    private AttributeSO currentInspectionAttributeA;
-    private AttributeSO currentInspectionAttributeB;
+    private List<AttributeSO> firstSelectedAttributes;
+    private List<AttributeSO> secondSelectedAttributes;
+
+    private InspectionStatus inspectionStatus;
+    private Item firstSelectedItem;
+    private Item secondSelectedItem;
     #endregion
 
     #region Debugging
@@ -254,6 +259,72 @@ public class GuestItemManager : MonoBehaviour
             Debug.LogWarning("Index out of range for sorSOArray in GuestItemManager.");
             return null;
         }
+    }
+    #endregion
+
+    #region Inspection
+    public void SelectAttributeForInspection(AttributeSO[] attributeData, Item sourceItem)
+    {
+        
+        if (firstSelectedAttributes == null)
+        {
+            firstSelectedAttributes =  new List<AttributeSO>(attributeData);
+            firstSelectedItem = sourceItem;
+            // Debug.Log($"[Inspection] First selection locked: {attributeData.displayName} from {sourceItem.gameObject.name}");
+            
+            // TODO:  visual feedback here
+            return;
+        }
+
+        if (sourceItem == firstSelectedItem)
+        {
+            Debug.LogWarning("You cannot compare an item to itself!");
+            ClearInspectionSelection(); // Reset if they make a mistake
+            return;
+        }
+
+        secondSelectedAttributes = new List<AttributeSO>(attributeData);
+        secondSelectedItem = sourceItem;
+        // Debug.Log($"[Inspection] Second selection locked: {attributeData.displayName} from {sourceItem.gameObject.name}");
+
+        EvaluateInspection();
+    }
+
+    public void SelectAttributeForInspection(AttributeSO attributeData, Item sourceItem)
+    {
+        SelectAttributeForInspection(new AttributeSO[] { attributeData }, sourceItem);
+    }
+
+    private void EvaluateInspection()
+    {
+        foreach(AttributeSO firstAttr in firstSelectedAttributes)
+        {
+            foreach(AttributeSO secondAttr in secondSelectedAttributes)
+            {
+                if (firstAttr.category == secondAttr.category)
+                {
+                    inspectionStatus = InspectionStatus.UNRELATED;  
+                }
+                if (firstAttr.displayName == secondAttr.displayName)
+                {
+                    inspectionStatus = InspectionStatus.MATCHED;
+                }
+                else
+                {
+                    inspectionStatus = InspectionStatus.MISMATCHED;  
+                }                    
+            }
+        }
+        Debug.Log($"Inspection result: {inspectionStatus}");
+        ClearInspectionSelection();
+    }
+
+    public void ClearInspectionSelection()
+    {
+        firstSelectedAttributes = null;
+        secondSelectedAttributes = null;
+        firstSelectedItem = null;
+        secondSelectedItem = null;
     }
     #endregion
 

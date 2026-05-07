@@ -265,8 +265,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 25f9afaf45b60af1ba4e5c6aed95c0a1, type: 2}
   - {fileID: 11400000, guid: 928b2ae869d61a955b8b5505373e2358, type: 2}
   guestsPanel: {fileID: 1624110739}
-  _sorPrefab: {fileID: 0}
-  sorSOArray: []
+  _sorPrefab: {fileID: 8525139595403560334, guid: 56e911c99d50994ec83d05cc7e5b1505, type: 3}
+  sorSOArray:
+  - {fileID: 11400000, guid: 6de495908e243686b96194b8c1ac0612, type: 2}
   debugToggleInspectionButton: {fileID: 2093504230}
   debugSpawnMaskButton: {fileID: 1417205405}
   debugSpawnGuestButton: {fileID: 525937453}
@@ -2329,7 +2330,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -463.9, y: 0}
+  m_AnchoredPosition: {x: 0, y: -416}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1692621169

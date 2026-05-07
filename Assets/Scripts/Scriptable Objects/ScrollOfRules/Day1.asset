@@ -12,10 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16a8d71610a1dc5329aa24aea252bcfd, type: 3}
   m_Name: Day1
   m_EditorClassIdentifier: Assembly-CSharp::SorSO
-  itemName: 
+  itemName: Day1Rules
   itemType: 0
   itemSprite: {fileID: 0}
   alignmentOffset: {x: 0, y: 0}
-  color: []
-  quality: []
-  theme: []
+  color:
+  - {fileID: 11400000, guid: a27a9ae31cf7ce28887b3baeb0941989, type: 2}
+  quality:
+  - {fileID: 11400000, guid: f28592a6583b58c69a153a0bbcfcca44, type: 2}
+  theme:
+  - {fileID: 11400000, guid: d022a49efdb609e95ba1f4487c8622b2, type: 2}

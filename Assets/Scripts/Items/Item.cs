@@ -52,7 +52,6 @@ public class Item : MonoBehaviour, IDragHandler, IPointerDownHandler, IBeginDrag
         {
             guestItemManager = GuestItemManager.Instance;
         }
-        
     }
 
     public virtual void Initialize(ItemSO itemSO)

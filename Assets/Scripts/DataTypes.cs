@@ -19,6 +19,16 @@ public enum CursorMode{
     INSPECTING
 }
 
+public enum InspectionStatus
+{
+    //different categories
+    UNRELATED,
+    
+    MATCHED,
+    //same category and same value
+    MISMATCHED //same category but different values
+}
+
 // [System.Serializable]
 // public struct ItemAttribute{
 //     public RuleType ruleType;

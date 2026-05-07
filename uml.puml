@@ -1,182 +1,226 @@
-@startuml IM MASKERING IT, IM MASQERAIDING IT, UOGHGHH!!!
+@startuml ProjectUML
 skinparam backgroundColor #FEFEFE
 skinparam classBackgroundColor #F0F0F0
 skinparam classBorderColor #333333
 
-
-enum ItemType{
+enum ItemType {
     MASK
     RULE
     LETTER
 }
 
-enum RuleType{
+enum RuleType {
     COLOR
     QUALITY
     THEME
     INSIGNIA
 }
 
-enum CursorMode{
+enum CursorMode {
     NORMAL
     INSPECTING
 }
 
-struct ItemAttribute{
-    RuleType ruleType
-    string actualValue
+enum InspectionStatus {
+    UNRELATED
+    MATCHED
+    MISMATCHED
 }
 
-struct InspectionZone{
-    RectTransform rectTransform
-    Button button
-    ItemAttribute attribute
+struct InspectionZone {
+    +BoxCollider2D collider
+    +AttributeSO attributeValue
 }
 
-class Item extends ScriptableObject{
+struct GuestMaskPair {
+    +MaskSO mask
+    +GuestSO guest
+}
+
+class AttributeSO <<ScriptableObject>> {
+    +RuleType category
+    +string displayName
+}
+
+class ItemSO <<ScriptableObject>> {
     +string itemName
     +ItemType itemType
     +Sprite itemSprite
-    Vector2 alignmentOffset
-    +List<ItemAttribute> itemAttributes
+    +Vector2 alignmentOffset
 }
 
-class Guest extends ScriptableObject{
+class MaskSO <<ItemSO>> {
+    +AttributeSO color
+    +AttributeSO quality
+    +AttributeSO theme
+}
+
+class SorSO <<ItemSO>> {
+    +AttributeSO[] color
+    +AttributeSO[] quality
+    +AttributeSO[] theme
+}
+
+class GuestSO <<ScriptableObject>> {
     +string guestName
     +Sprite guestSprite
     +bool isLegit
     +bool willFight
-    +TextAsset dialogue
 }
 
-class MaskDisplay{
-    +Item itemAssigned
-    +RectTransform rectTransform
-    +Image im
-    +List<InspectionZone> inspectionZones 
-}
-
-class GuestDisplay{
-    +MaskDisplay maskAssigned
-    +RectTransform rectTransform
-    +Image im
-    +Vector2 maskPivot
+class GuestlistSO <<ScriptableObject>> {
+    +int dayNumber
+    +GuestMaskPair[] guestList
 }
 
 class GuestItemManager <<MonoBehaviour>> {
-    + static Instance: GuestItemManager
-    + inspectionMode: bool
-    + SetupMask(maskSO: Item, parentPanel: RectTransform): GameObject
-    + SetupGuest(guestSO: Guest, maskSO: Item): GameObject
-    + SpawnMask()
-    + SpawnGuest()
-    + ToggleInspectionMode(value: bool)
+    +static GuestItemManager Instance
+    +bool inspectionMode
+    +Canvas canvas
+    +RectTransform itemsCanvas
+    +RectTransform tablePanel
+    +RectTransform guestsPanel
+    +GameObject SetupMask(MaskSO maskSO, RectTransform parentPanel)
+    +GameObject SetupGuest(GuestSO guestSO, MaskSO maskSO)
+    +GameObject SetupSOR(SorSO sorSO, RectTransform parentPanel)
+    +GameObject SetupSOR(int index, RectTransform parentPanel)
+    +void SelectAttributeForInspection(AttributeSO[] attributeData, Item sourceItem)
+    +void SelectAttributeForInspection(AttributeSO attributeData, Item sourceItem)
+    +void ToggleInspectionMode(bool value)
+    +void TeleportUIElement(GameObject teleportee, float xPos, float yPos)
+    +void TeleportUIElement(GameObject teleportee, RectTransform destinationTarget)
+    +IEnumerator MoveUIElement(GameObject movee, float xPos, float yPos, float timeInSeconds)
+    +IEnumerator MoveUIElement(GameObject movee, RectTransform destinationTarget, float timeInSeconds)
 }
 
-class macroManager{
-    +macroState initialState
-    +macroStateMachine stateMachine
-    +macroMenuState menuState
-    macroGameplayState gameplayState
+class Item <<MonoBehaviour>> {
+    +GuestItemManager guestItemManager
+    +RectTransform rt
+    +Canvas canvas
+    +CanvasGroup canvasGroup
+    +virtual void Initialize(ItemSO itemSO)
+    +void ToggleDraggable(bool value)
+    +void ToggleInspectable(bool value)
 }
 
-class macroState {
-    +macroManager
-    +macroStateMachine
-    void EnterState()
-    + void ExitState()
-    + void FrameUpdate()
-    + void PhysicsUpdate()
-    + void AnimationTriggerEvent(Enemy.AnimationTriggerType triggerType)
+class Item_Mask <<Item>> {
+    +void Initialize(MaskSO maskSO)
+    +void maskAttributeZoneClicked()
 }
 
-class macroStateMachine{
-    +macroState currentState
-    + void Initialize(macroState startingState)
-    + void ChangeState(macroState newState)
+class Item_SOR <<Item>> {
+    +void Initialize(SorSO scrollSO)
+    +void ColorAttributeZoneClicked()
+    +void QualityAttributeZoneClicked()
+    +void ThemeAttributeZoneClicked()
 }
 
-class macroMenuState extends macroState{
+class Guest <<MonoBehaviour>> {
+    +GuestSO guestAssigned
+    +RectTransform maskPinRect
+    +void Initialize(GuestSO guestSO)
 }
 
-class macroGameplayState extends macroState{
+class MicroManager <<MonoBehaviour>> {
+    +MicroStateMachine StateMachine
+    +MicroCutsceneState CutsceneState
+    +MicroInstructionsState InstructionsState
+    +MicroNextGuestState NextGuestState
+    +MicroInspectionState InspectionState
+    +MicroDecisionState DecisionState
+    +GuestItemManager guestItemManager
+    +GuestlistSO[] guestListSO
+    +int currentDay
+    +int currentGuest
+    +GameObject activeGuest
+    +MaskSO activeMask
 }
 
-class microManager{
-    +microState initialState
-    +microStateMachine stateMachine
-    +microCutsceneState cutsceneState
-    +microInstructionsState instructionsState
-    +microNextGuestState nextGuestState
-    +microInspectionState inspectionState
-    +microDecisionState decisionState
-    +MaskDisplay maskDisplay
-    +GuestDisplay guestDisplay
+class MicroStateMachine {
+    +MicroState currentState
+    +void Initialize(MicroState startingState)
+    +void ChangeState(MicroState newState)
 }
 
-
-class microState{
-    +microManager
-    +microStateMachine
-    void EnterState()
-    + void ExitState()
-    + void FrameUpdate()
-    + void PhysicsUpdate()
-    + void AnimationTriggerEvent(Enemy.AnimationTriggerType triggerType)
+class MicroState {
+    +MicroManager manager
+    +MicroStateMachine stateMachine
+    +virtual void EnterState()
+    +virtual void ExitState()
+    +virtual void UpdateState()
+    +virtual void FixedUpdateState()
 }
 
-class microStateMachine{
-    +microState currentState
-    + void Initialize(microState startingState)
-    + void ChangeState(microState newState)
+class MicroCutsceneState <<MicroState>> {
 }
 
-
-class microCutsceneState extends microState{
+class MicroInstructionsState <<MicroState>> {
 }
 
-class microInstructionsState extends microState{
+class MicroNextGuestState <<MicroState>> {
+    -MaskSO currentMask
+    -GuestSO currentGuest
 }
 
-class microNextGuestState extends microState{
+class MicroInspectionState <<MicroState>> {
 }
 
-class microInspectionState extends microState{
-    +CursorMode currentCursorMode
-    +void mouseShootRaycasts()
+class MicroDecisionState <<MicroState>> {
 }
 
-class microDecisionState extends microState{
+class macroManager <<MonoBehaviour>> {
 }
 
-macroManager --> macroStateMachine : has
-macroStateMachine --> macroState : manages
-macroState --> macroStateMachine : uses
-macroGameplayState --> microManager : enables
+class macroStateMachine <<MonoBehaviour>> {
+}
 
-microManager --> microStateMachine : has
-microManager --> GuestDisplay : has
-microManager --> MaskDisplay : has
-MaskDisplay --> InspectionZone : has
-MaskDisplay --> ItemType : has
-MaskDisplay *--> Item : displays
-InspectionZone --> ItemAttribute : has
-ItemAttribute --> RuleType : has
-GuestDisplay --> MaskDisplay : has
-GuestDisplay *--> Guest : displays
-microStateMachine -down-> microState : manages
-microState -up-> microStateMachine : uses
-microInspectionState --> CursorMode : uses
+class macroState <<MonoBehaviour>> {
+}
 
-microDecisionState --> GuestItemManager : utilizes
-microInspectionState --> GuestItemManager : utilizes
-microNextGuestState --> GuestItemManager : utilizes
+class macroMenuState <<MonoBehaviour>> {
+}
 
-' Gameplay flow actual
-microCutsceneState -right-> microInstructionsState 
-microInstructionsState -right-> microNextGuestState
-microNextGuestState -right-> microInspectionState
-microInspectionState -right-> microDecisionState
-microDecisionState -up-> microNextGuestState : loops
+class macroGameplayState <<MonoBehaviour>> {
+}
+
+GuestItemManager --> Item : manages
+GuestItemManager --> Item_Mask : creates
+GuestItemManager --> Item_SOR : creates
+GuestItemManager --> Guest : manages
+GuestItemManager --> MaskSO : references
+GuestItemManager --> GuestSO : references
+GuestItemManager --> SorSO : references
+GuestItemManager --> AttributeSO : references
+
+Item_Mask --|> Item
+Item_SOR --|> Item
+MaskSO --|> ItemSO
+SorSO --|> ItemSO
+
+Guest --> GuestSO : assigned
+Item_Mask --> MaskSO : assigned
+Item_SOR --> SorSO : assigned
+
+MaskSO --> AttributeSO : has
+SorSO --> AttributeSO : has
+
+GuestlistSO --> GuestMaskPair : contains
+GuestMaskPair --> MaskSO
+GuestMaskPair --> GuestSO
+
+MicroManager --> MicroStateMachine : has
+MicroManager --> MicroCutsceneState : has
+MicroManager --> MicroInstructionsState : has
+MicroManager --> MicroNextGuestState : has
+MicroManager --> MicroInspectionState : has
+MicroManager --> MicroDecisionState : has
+MicroManager --> GuestItemManager : uses
+
+MicroStateMachine --> MicroState : manages
+MicroState --> MicroManager : uses
+MicroState --> MicroStateMachine : uses
+MicroNextGuestState --> GuestItemManager : uses
+
+Item --> GuestItemManager : uses
 
 @enduml
