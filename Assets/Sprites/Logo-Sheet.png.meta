@@ -1,13 +1,25 @@
 fileFormatVersion: 2
-guid: 2a4a580b7bacd76cab0ee99ee5a26001
+guid: 32f3a36303363d5f4a86ebd78ccd5ace
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 8366009521009103241
-    second: faust-Sheet_0
+      213: 3153353519117192650
+    second: Logo-Sheet_0
   - first:
-      213: -445693357132847007
-    second: faust-Sheet_1
+      213: 6031759670966402087
+    second: Logo-Sheet_1
+  - first:
+      213: 1202588614057802397
+    second: Logo-Sheet_2
+  - first:
+      213: -646098540509376576
+    second: Logo-Sheet_3
+  - first:
+      213: 3553236317250933874
+    second: Logo-Sheet_4
+  - first:
+      213: -2560480225974360759
+    second: Logo-Sheet_5
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -116,13 +128,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: faust-Sheet_0
+      name: Logo-Sheet_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 991
-        height: 2088
+        x: 29
+        y: 29
+        width: 506
+        height: 458
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -131,20 +143,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 981984795590a1470800000000000000
-      internalID: 8366009521009103241
+      spriteID: acd45368156f2cb20800000000000000
+      internalID: 3153353519117192650
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: faust-Sheet_1
+      name: Logo-Sheet_1
       rect:
         serializedVersion: 2
-        x: 815
-        y: 1817
-        width: 247
-        height: 134
+        x: 509
+        y: 173
+        width: 74
+        height: 80
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -153,8 +165,96 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 1686859c04490d9f0800000000000000
-      internalID: -445693357132847007
+      spriteID: 72cba7e867d15b350800000000000000
+      internalID: 6031759670966402087
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Logo-Sheet_2
+      rect:
+        serializedVersion: 2
+        x: 605
+        y: 173
+        width: 62
+        height: 86
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d9a38df09f370b010800000000000000
+      internalID: 1202588614057802397
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Logo-Sheet_3
+      rect:
+        serializedVersion: 2
+        x: 683
+        y: 173
+        width: 74
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0cf4a03fcc89807f0800000000000000
+      internalID: -646098540509376576
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Logo-Sheet_4
+      rect:
+        serializedVersion: 2
+        x: 773
+        y: 167
+        width: 44
+        height: 92
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 27452ccca91af4130800000000000000
+      internalID: 3553236317250933874
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Logo-Sheet_5
+      rect:
+        serializedVersion: 2
+        x: 839
+        y: 179
+        width: 74
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 945e26cecc8577cd0800000000000000
+      internalID: -2560480225974360759
       vertices: []
       indices: 
       edges: []
@@ -173,8 +273,12 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      faust-Sheet_0: 8366009521009103241
-      faust-Sheet_1: -445693357132847007
+      Logo-Sheet_0: 3153353519117192650
+      Logo-Sheet_1: 6031759670966402087
+      Logo-Sheet_2: 1202588614057802397
+      Logo-Sheet_3: -646098540509376576
+      Logo-Sheet_4: 3553236317250933874
+      Logo-Sheet_5: -2560480225974360759
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

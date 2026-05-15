@@ -1,10 +1,16 @@
 fileFormatVersion: 2
-guid: efdfed68bd89ab4c390c08fe21739464
+guid: dc8547839f1e8f171a1a7c5c8ee72e2c
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -765756633230045227
-    second: arthur-Sheet_0
+      213: 7037884639023539870
+    second: Dropper_UI-Sheet_0
+  - first:
+      213: -2111421885116913875
+    second: Dropper_UI-Sheet_1
+  - first:
+      213: 4869696065206335264
+    second: Dropper_UI-Sheet_2
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +119,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: arthur-Sheet_0
+      name: Dropper_UI-Sheet_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 1044
-        height: 1596
+        x: 35
+        y: 53
+        width: 80
+        height: 80
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +134,52 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5df8ce3366c7f55f0800000000000000
-      internalID: -765756633230045227
+      spriteID: e962d277ac69ba160800000000000000
+      internalID: 7037884639023539870
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dropper_UI-Sheet_1
+      rect:
+        serializedVersion: 2
+        x: 149
+        y: 53
+        width: 80
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d27ee967bf8b2b2e0800000000000000
+      internalID: -2111421885116913875
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dropper_UI-Sheet_2
+      rect:
+        serializedVersion: 2
+        x: 143
+        y: 29
+        width: 20
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 027bdb245c2a49340800000000000000
+      internalID: 4869696065206335264
       vertices: []
       indices: 
       edges: []
@@ -148,7 +198,9 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      arthur-Sheet_0: -765756633230045227
+      Dropper_UI-Sheet_0: 7037884639023539870
+      Dropper_UI-Sheet_1: -2111421885116913875
+      Dropper_UI-Sheet_2: 4869696065206335264
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

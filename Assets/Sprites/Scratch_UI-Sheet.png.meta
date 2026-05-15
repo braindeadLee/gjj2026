@@ -1,10 +1,22 @@
 fileFormatVersion: 2
-guid: efdfed68bd89ab4c390c08fe21739464
+guid: a8f3c7b2bc5ab76699260d8221e072aa
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -765756633230045227
-    second: arthur-Sheet_0
+      213: -3918262022575166674
+    second: Scratch_UI-Sheet_0
+  - first:
+      213: -8497634407131008188
+    second: Scratch_UI-Sheet_1
+  - first:
+      213: -7245618774257535371
+    second: Scratch_UI-Sheet_2
+  - first:
+      213: 2819563646336483737
+    second: Scratch_UI-Sheet_3
+  - first:
+      213: -161153408288666506
+    second: Scratch_UI-Sheet_4
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +125,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: arthur-Sheet_0
+      name: Scratch_UI-Sheet_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 1044
-        height: 1596
+        x: 65
+        y: 29
+        width: 14
+        height: 44
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +140,96 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5df8ce3366c7f55f0800000000000000
-      internalID: -765756633230045227
+      spriteID: e2be08743798f99c0800000000000000
+      internalID: -3918262022575166674
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Scratch_UI-Sheet_1
+      rect:
+        serializedVersion: 2
+        x: 137
+        y: 29
+        width: 26
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 443b1d37786521a80800000000000000
+      internalID: -8497634407131008188
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Scratch_UI-Sheet_2
+      rect:
+        serializedVersion: 2
+        x: 209
+        y: 29
+        width: 14
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5767a7e1d14627b90800000000000000
+      internalID: -7245618774257535371
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Scratch_UI-Sheet_3
+      rect:
+        serializedVersion: 2
+        x: 221
+        y: 29
+        width: 26
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 991cd79923a112720800000000000000
+      internalID: 2819563646336483737
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Scratch_UI-Sheet_4
+      rect:
+        serializedVersion: 2
+        x: 281
+        y: 29
+        width: 56
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 67c4c9834d773cdf0800000000000000
+      internalID: -161153408288666506
       vertices: []
       indices: 
       edges: []
@@ -148,7 +248,11 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      arthur-Sheet_0: -765756633230045227
+      Scratch_UI-Sheet_0: -3918262022575166674
+      Scratch_UI-Sheet_1: -8497634407131008188
+      Scratch_UI-Sheet_2: -7245618774257535371
+      Scratch_UI-Sheet_3: 2819563646336483737
+      Scratch_UI-Sheet_4: -161153408288666506
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

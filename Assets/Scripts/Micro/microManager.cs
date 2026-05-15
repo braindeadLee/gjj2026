@@ -8,6 +8,7 @@ Rules
 */
 using Unity.VisualScripting;
 using UnityEngine;
+using TMPro;
 
 public class MicroManager : MonoBehaviour
 {
@@ -79,5 +80,113 @@ public class MicroManager : MonoBehaviour
     private void FixedUpdate()
     {
         StateMachine.currentState.FixedUpdateState();
+    }
+
+    // Add these inside microManager.cs
+    
+    public void UI_Button_ApproveGuest()
+    {
+        // Only allow this if we are actually in the inspection phase!
+        if (StateMachine.currentState == InspectionState)
+        {
+            Debug.Log("Player clicked Approve!");
+            // TODO: Play approve stamp sound
+            StateMachine.ChangeState(DecisionState);
+        }
+    }
+
+    public void UI_Button_RejectGuest()
+    {
+        if (StateMachine.currentState == InspectionState)
+        {
+            Debug.Log("Player clicked Reject!");
+            // TODO: Play reject stamp sound
+            StateMachine.ChangeState(DecisionState);
+        }
+    }
+
+    [Header("Data Architecture")]
+    public CutsceneSO[] dailyCutscenes;
+    public DialogueSO[] dailyDialogues;
+
+    [Header("UI: Master Panels")]
+    public GameObject inspectionUIPanel; // Put ALL your drag/drop table UI in here!
+
+    [Header("UI: Cutscene")]
+    public GameObject cutscenePanel;
+    public UnityEngine.UI.Image cutsceneImageDisplay;
+    private int currentCutsceneIndex = 0;
+
+    [Header("UI: Dialogue & Instructions")]
+    public GameObject dialoguePanel;
+    public GameObject npcCharacterArt; // The GameObject holding the NPC Image
+    public RectTransform npcOffscreenPos; // Where they wait
+    public RectTransform npcOnscreenPos;  // Where they stand
+
+    [Header("UI: Speech Bubbles")]
+    public GameObject playerBubble;
+    public TextMeshProUGUI playerText;
+    
+    public GameObject npcBubble;
+    public TextMeshProUGUI npcText;
+    
+    public GameObject clickToContinueTriangle;
+    private int currentDialogueIndex = 0;
+
+    // --- CUTSCENE LOGIC ---
+    public void AdvanceCutscene()
+    {
+        currentCutsceneIndex++;
+        CutsceneSO todayCutscene = dailyCutscenes[currentDay];
+
+        if (currentCutsceneIndex < todayCutscene.sequenceImages.Length)
+        {
+            cutsceneImageDisplay.sprite = todayCutscene.sequenceImages[currentCutsceneIndex];
+        }
+        else
+        {
+            // Cutscene is over! Fade out (Faking it instantly for MVP, you can add DOTween/Coroutine later)
+            cutscenePanel.SetActive(false);
+            StateMachine.ChangeState(InstructionsState);
+        }
+    }
+
+    // --- DIALOGUE LOGIC ---
+    public void AdvanceDialogue()
+    {
+        currentDialogueIndex++;
+        DialogueSO todayDialogue = dailyDialogues[currentDay];
+
+        if (currentDialogueIndex < todayDialogue.lines.Length)
+        {
+            DisplayDialogueLine(todayDialogue.lines[currentDialogueIndex]);
+        }
+        else
+        {
+            // Dialogue over! Clean up and start the game!
+            dialoguePanel.SetActive(false);
+            npcCharacterArt.SetActive(false); // Hide the NPC
+            inspectionUIPanel.SetActive(true); // TURN THE GAME UI ON!
+            
+            StateMachine.ChangeState(NextGuestState);
+        }
+    }
+
+    public void DisplayDialogueLine(DialogueLine line)
+    {
+        clickToContinueTriangle.SetActive(true);
+
+        if (line.isPlayerTalking)
+        {
+            playerBubble.SetActive(true);
+            npcBubble.SetActive(false);
+            playerText.text = line.text;
+        }
+        else
+        {
+            playerBubble.SetActive(false);
+            npcBubble.SetActive(true);
+            npcText.text = line.text;
+        }
     }
 }

@@ -23,6 +23,7 @@ public class GuestItemManager : MonoBehaviour
     [SerializeField] private GameObject _maskPrefab;
     [SerializeField] private MaskSO[] maskSOArray;
     [SerializeField] private RectTransform tablePanel;
+    private List<GameObject> activeMasks = new List<GameObject>();
 
     //legacy, need to rework or delete
     // private List<GameObject> activeMasks = new();
@@ -131,29 +132,30 @@ public class GuestItemManager : MonoBehaviour
     }
     #region Items
     //Enforce rules of inspection/dragging mode on all items, called whenever those modes are toggled
-    private void ToggleInspectionMode(bool value)
+    //Enforce rules of inspection/dragging mode on all items, called whenever those modes are toggled
+    public void ToggleInspectionMode(bool value)
     {
         inspectionMode = value;
-        debugInspectionModeText.text = "Inspection Mode: " + (inspectionMode ? "ON" : "OFF");
+        if (debugInspectionModeText != null) 
+            debugInspectionModeText.text = "Inspection Mode: " + (inspectionMode ? "ON" : "OFF");
 
-        foreach (GameObject item in activeItems)
-        {
-            if (item.GetComponent<RectTransform>().IsChildOf(itemsCanvas))
-            {
-                item.GetComponent<Item>().ToggleInspectable(value);
-            }
-        }
+        // Scrub the generalized items list of anything that was destroyed
+        activeItems.RemoveAll(item => item == null);
 
-        foreach (GameObject item in activeItems)
+        foreach (GameObject obj in activeItems)
         {
-            if (item.GetComponent<RectTransform>().IsChildOf(tablePanel))
+            Item itemComponent = obj.GetComponent<Item>();
+            
+            if (itemComponent != null)
             {
-                item.GetComponent<Item>().ToggleDraggable(!value);
+                // ALL items now obey the toggle, no matter where they are!
+                itemComponent.ToggleDraggable(!value);
+                itemComponent.ToggleInspectable(value);
             }
         }
     }
 
-    private void ToggleInspectionMode()
+    public void ToggleInspectionMode()
     {
         ToggleInspectionMode(!inspectionMode);
     }
@@ -192,6 +194,33 @@ public class GuestItemManager : MonoBehaviour
 
                 TeleportUIElement(maskTransferee.gameObject, 0f, 0f);
 
+                if (!activeItems.Contains(maskTransferee.gameObject))
+                {
+                    activeItems.Add(maskTransferee.gameObject);
+                }
+            }
+        }
+
+    }
+
+    // Inside GuestItemManager.cs
+    public void TransferMaskBackToGuest()
+    {
+        if (activeGuest != null)
+        {
+            // Find the mask currently on the table
+            Item_Mask maskOnTable = tablePanel.GetComponentInChildren<Item_Mask>();
+            if (maskOnTable != null)
+            {
+                Guest guestComp = activeGuest.GetComponent<Guest>();
+                
+                // Instantly teleport and parent it back
+                maskOnTable.rt.SetParent(guestComp.maskPinRect, false);
+                maskOnTable.rt.anchoredPosition = Vector2.zero; // Or use maskSO.alignmentOffset if needed
+                
+                // Disable dragging so they can't grab it while the guest is walking away!
+                maskOnTable.ToggleDraggable(false);
+                maskOnTable.ToggleInspectable(false);
             }
         }
     }
@@ -297,25 +326,29 @@ public class GuestItemManager : MonoBehaviour
 
     private void EvaluateInspection()
     {
+        // Default to unrelated until proven otherwise
+        inspectionStatus = InspectionStatus.UNRELATED; 
+
         foreach(AttributeSO firstAttr in firstSelectedAttributes)
         {
             foreach(AttributeSO secondAttr in secondSelectedAttributes)
             {
+                // Only evaluate if they are the exact same category (e.g. Color vs Color)
                 if (firstAttr.category == secondAttr.category)
                 {
-                    inspectionStatus = InspectionStatus.UNRELATED;  
+                    if (firstAttr == secondAttr) 
+                    {
+                        inspectionStatus = InspectionStatus.MATCHED;
+                    }
+                    else
+                    {
+                        // The moment we find a mismatch in the same category, lock it in!
+                        inspectionStatus = InspectionStatus.MISMATCHED;  
+                    }
                 }
-                if (firstAttr.displayName == secondAttr.displayName)
-                {
-                    inspectionStatus = InspectionStatus.MATCHED;
-                }
-                else
-                {
-                    inspectionStatus = InspectionStatus.MISMATCHED;  
-                }                    
             }
         }
-        Debug.Log($"Inspection result: {inspectionStatus}");
+        Debug.Log($"[Inspection] Result: {inspectionStatus}");
         ClearInspectionSelection();
     }
 
