@@ -16,3 +16,4 @@ MonoBehaviour:
   guestSprite: {fileID: 21300000, guid: 3945ea510b15a3095b3f84c86cd93033, type: 3}
   isLegit: 0
   willFight: 1
+  conversation: {fileID: 11400000, guid: b1efe2a4c50c1539e93aa1a65224ac97, type: 2}

@@ -1,10 +1,9 @@
 using System.Collections.Generic;
 using TMPro;
-using Unity.Burst.Intrinsics;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using UnityEngine.InputSystem; 
 
 public class GuestItemManager : MonoBehaviour
 {
@@ -12,7 +11,6 @@ public class GuestItemManager : MonoBehaviour
     [SerializeField] private Canvas canvas;
     public bool inspectionMode = false;
     
-    //all items, regardless of sub-type, must obey rules of Inspection/Dragging mode
     #region Items
     private List<GameObject> activeItems = new();
     [SerializeField] private RectTransform itemsCanvas;
@@ -23,10 +21,6 @@ public class GuestItemManager : MonoBehaviour
     [SerializeField] private GameObject _maskPrefab;
     [SerializeField] private MaskSO[] maskSOArray;
     [SerializeField] private RectTransform tablePanel;
-    private List<GameObject> activeMasks = new List<GameObject>();
-
-    //legacy, need to rework or delete
-    // private List<GameObject> activeMasks = new();
     private GameObject activeMask;
     #endregion
 
@@ -39,20 +33,26 @@ public class GuestItemManager : MonoBehaviour
     #endregion
 
     #region Scroll of Rules
-
     [SerializeField] private GameObject _sorPrefab;
     [SerializeField] private SorSO[] sorSOArray;
     private GameObject activeSOR;
-
     #endregion
 
     #region Inspection
+    [Header("Cursors")]
+    public Texture2D defaultCursor;
+    public Texture2D defaultClickCursor;
+    public Texture2D inspectCursor;
+    public Texture2D inspectClickCursor;
+    public Vector2 cursorHotspot = Vector2.zero; 
+
     private List<AttributeSO> firstSelectedAttributes;
     private List<AttributeSO> secondSelectedAttributes;
 
     private InspectionStatus inspectionStatus;
     private Item firstSelectedItem;
     private Item secondSelectedItem;
+    public InspectionStatus CurrentInspectionStatus => inspectionStatus; 
     #endregion
 
     #region Debugging
@@ -64,122 +64,111 @@ public class GuestItemManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI debugInspectionModeText;
     [SerializeField] private Image debugPanel;
     [SerializeField] private bool debugMode = false;
-    
     #endregion
 
     #region Animations
-
     [SerializeField] public RectTransform guestSpawnPosition;
     [SerializeField] public RectTransform guestStandPosition;
 
-    //All "animations" should notify when they're done via these events, so that we can chain them together and/or trigger other actions when they finish
     public UnityEvent teleportUIDoneEvent;
     public UnityEvent moveUIDoneEvent;
     public UnityEvent scaleUIDoneEvent;
     public UnityEvent colorUIDoneEvent;
-
     #endregion
-
 
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
     }
+
     private void Start()
     {
         inspectionMode = false;
-
         if (debugMode)
         {
             debugPanel.gameObject.SetActive(true);
-            debugInspectionModeText.text = "Inspection Mode: " + (inspectionMode ? "ON" : "OFF");
+            if (debugInspectionModeText != null) debugInspectionModeText.text = "Inspection Mode: " + (inspectionMode ? "ON" : "OFF");
         }
-        else
-        {
-            debugPanel.gameObject.SetActive(false);
-        }
+        else debugPanel.gameObject.SetActive(false);
+
         ToggleInspectionMode(false);
+    }
+
+    private void Update()
+    {
+        if (Mouse.current == null) return;
+
+        if (Mouse.current.leftButton.wasPressedThisFrame)
+        {
+            Texture2D clickTex = inspectionMode ? inspectClickCursor : defaultClickCursor;
+            if (clickTex != null) Cursor.SetCursor(clickTex, cursorHotspot, UnityEngine.CursorMode.Auto);
+        }
+        else if (Mouse.current.leftButton.wasReleasedThisFrame)
+        {
+            Texture2D releaseTex = inspectionMode ? inspectCursor : defaultCursor;
+            if (releaseTex != null) Cursor.SetCursor(releaseTex, cursorHotspot, UnityEngine.CursorMode.Auto);
+        }
     }
 
     private void OnEnable()
     {
-        if (debugToggleInspectionButton != null)
-            debugToggleInspectionButton.onClick.AddListener(ToggleInspectionMode);
-        if (debugSpawnMaskButton != null)
-            debugSpawnMaskButton.onClick.AddListener(SpawnMask);
-        if (debugSpawnGuestButton != null)
-            debugSpawnGuestButton.onClick.AddListener(SpawnGuest);
-        if (debugTransferMaskButton != null)        
-            debugTransferMaskButton.onClick.AddListener(TransferMask);
+        if (debugToggleInspectionButton != null) debugToggleInspectionButton.onClick.AddListener(ToggleInspectionMode);
+        if (debugSpawnMaskButton != null) debugSpawnMaskButton.onClick.AddListener(SpawnMask);
+        if (debugSpawnGuestButton != null) debugSpawnGuestButton.onClick.AddListener(SpawnGuest);
+        if (debugTransferMaskButton != null) debugTransferMaskButton.onClick.AddListener(TransferMask);
     }
+
     private void OnDisable()
     {
-        if (debugToggleInspectionButton != null)
-            debugToggleInspectionButton.onClick.RemoveListener(ToggleInspectionMode);
-        if (debugSpawnMaskButton != null)
-            debugSpawnMaskButton.onClick.RemoveListener(SpawnMask);
-        if (debugSpawnGuestButton != null)
-            debugSpawnGuestButton.onClick.RemoveListener(SpawnGuest);
-        if (debugTransferMaskButton != null)
-            debugTransferMaskButton.onClick.RemoveListener(TransferMask);
+        if (debugToggleInspectionButton != null) debugToggleInspectionButton.onClick.RemoveListener(ToggleInspectionMode);
+        if (debugSpawnMaskButton != null) debugSpawnMaskButton.onClick.RemoveListener(SpawnMask);
+        if (debugSpawnGuestButton != null) debugSpawnGuestButton.onClick.RemoveListener(SpawnGuest);
+        if (debugTransferMaskButton != null) debugTransferMaskButton.onClick.RemoveListener(TransferMask);
     }
+
     #region Items
-    //Enforce rules of inspection/dragging mode on all items, called whenever those modes are toggled
-    //Enforce rules of inspection/dragging mode on all items, called whenever those modes are toggled
     public void ToggleInspectionMode(bool value)
     {
         inspectionMode = value;
         if (debugInspectionModeText != null) 
             debugInspectionModeText.text = "Inspection Mode: " + (inspectionMode ? "ON" : "OFF");
 
-        // Scrub the generalized items list of anything that was destroyed
+        if (defaultCursor != null && inspectCursor != null)
+        {
+            Cursor.SetCursor(value ? inspectCursor : defaultCursor, cursorHotspot, UnityEngine.CursorMode.Auto);
+        }
+
         activeItems.RemoveAll(item => item == null);
 
         foreach (GameObject obj in activeItems)
         {
             Item itemComponent = obj.GetComponent<Item>();
-            
             if (itemComponent != null)
             {
-                // ALL items now obey the toggle, no matter where they are!
                 itemComponent.ToggleDraggable(!value);
                 itemComponent.ToggleInspectable(value);
             }
         }
     }
 
-    public void ToggleInspectionMode()
-    {
-        ToggleInspectionMode(!inspectionMode);
-    }
-
+    public void ToggleInspectionMode() => ToggleInspectionMode(!inspectionMode);
     #endregion
 
     #region Masks
-        public GameObject SetupMask(MaskSO maskSO, RectTransform parentPanel = null){
-            
-            if(parentPanel == null) parentPanel = tablePanel;
-        
-            GameObject newMask = Instantiate(_maskPrefab, parentPanel);
-            Item_Mask maskComponent = newMask.GetComponent<Item_Mask>();
-            maskComponent.Initialize(maskSO);
-            //change later
-            maskComponent.ToggleDraggable(true);
-            maskComponent.ToggleInspectable(false);
+    public GameObject SetupMask(MaskSO maskSO, RectTransform parentPanel = null)
+    {
+        if(parentPanel == null) parentPanel = tablePanel;
+        GameObject newMask = Instantiate(_maskPrefab, parentPanel);
+        Item_Mask maskComponent = newMask.GetComponent<Item_Mask>();
+        maskComponent.Initialize(maskSO);
+        maskComponent.ToggleDraggable(true);
+        maskComponent.ToggleInspectable(false);
+        activeMask = newMask;
+        return newMask;
+    }
 
-            activeMask = newMask;
-
-            return newMask;
-        }
-
-        public void TransferMask()
+    public void TransferMask()
     {
         if(activeGuest != null)
         {
@@ -194,44 +183,32 @@ public class GuestItemManager : MonoBehaviour
 
                 TeleportUIElement(maskTransferee.gameObject, 0f, 0f);
 
-                if (!activeItems.Contains(maskTransferee.gameObject))
-                {
-                    activeItems.Add(maskTransferee.gameObject);
-                }
+                if (!activeItems.Contains(maskTransferee.gameObject)) activeItems.Add(maskTransferee.gameObject);
             }
         }
-
     }
 
-    // Inside GuestItemManager.cs
     public void TransferMaskBackToGuest()
     {
         if (activeGuest != null)
         {
-            // Find the mask currently on the table
             Item_Mask maskOnTable = tablePanel.GetComponentInChildren<Item_Mask>();
             if (maskOnTable != null)
             {
                 Guest guestComp = activeGuest.GetComponent<Guest>();
-                
-                // Instantly teleport and parent it back
                 maskOnTable.rt.SetParent(guestComp.maskPinRect, false);
-                maskOnTable.rt.anchoredPosition = Vector2.zero; // Or use maskSO.alignmentOffset if needed
-                
-                // Disable dragging so they can't grab it while the guest is walking away!
+                maskOnTable.rt.anchoredPosition = Vector2.zero; 
                 maskOnTable.ToggleDraggable(false);
                 maskOnTable.ToggleInspectable(false);
             }
         }
     }
-
     #endregion
 
     #region Guests
-
-    public GameObject SetupGuest(GuestSO guestSO, MaskSO maskSO){
+    public GameObject SetupGuest(GuestSO guestSO, MaskSO maskSO)
+    {
         GameObject newGuest = Instantiate(_guestPrefab, guestsPanel);
-
         Guest guestComponent = newGuest.GetComponent<Guest>();
         guestComponent.Initialize(guestSO);
 
@@ -244,27 +221,30 @@ public class GuestItemManager : MonoBehaviour
         RectTransform maskRect = newMask.GetComponent<RectTransform>();
         RectTransform maskPinRect = newGuest.GetComponent<Guest>().maskPinRect;
 
-            if (maskPinRect == null)
-                Debug.Log("no maskPinRect");
-
-            maskRect.SetParent(maskPinRect, false);
-            maskRect.anchorMin = new Vector2(0.5f,0.5f);
-            maskRect.anchorMax = new Vector2(0.5f,0.5f);
-            maskRect.pivot = new Vector2(0.5f, 0.5f);
-
-            maskRect.anchoredPosition = maskSO.alignmentOffset;
+        maskRect.SetParent(maskPinRect, false);
+        maskRect.anchorMin = new Vector2(0.5f,0.5f);
+        maskRect.anchorMax = new Vector2(0.5f,0.5f);
+        maskRect.pivot = new Vector2(0.5f, 0.5f);
+        maskRect.anchoredPosition = maskSO.alignmentOffset;
 
         activeGuest = newGuest;
+
+        // Allow all images (including buttons) to start at 0 alpha so they hop in seamlessly
+        foreach (UnityEngine.UI.Image img in newGuest.GetComponentsInChildren<UnityEngine.UI.Image>())
+        {
+            Color c = img.color;
+            c.a = 0f;
+            img.color = c;
+        }
+        
         return newGuest;
     }
-
     #endregion
 
     #region Scroll of Rules
     public GameObject SetupSOR(SorSO sorSO, RectTransform parentPanel = null)
     {
         if(parentPanel == null) parentPanel = tablePanel;
-
         GameObject newSOR = Instantiate(_sorPrefab, parentPanel);
         Item_SOR sorComponent = newSOR.GetComponent<Item_SOR>();
         sorComponent.Initialize(sorSO);
@@ -272,7 +252,6 @@ public class GuestItemManager : MonoBehaviour
         sorComponent.ToggleInspectable(inspectionMode);
 
         activeItems.Add(newSOR);
-
         return newSOR;
     }
 
@@ -291,31 +270,25 @@ public class GuestItemManager : MonoBehaviour
     }
     #endregion
 
-    #region Inspection
+    #region Inspection Logic
     public void SelectAttributeForInspection(AttributeSO[] attributeData, Item sourceItem)
     {
-        
         if (firstSelectedAttributes == null)
         {
             firstSelectedAttributes =  new List<AttributeSO>(attributeData);
             firstSelectedItem = sourceItem;
-            // Debug.Log($"[Inspection] First selection locked: {attributeData.displayName} from {sourceItem.gameObject.name}");
-            
-            // TODO:  visual feedback here
             return;
         }
 
         if (sourceItem == firstSelectedItem)
         {
             Debug.LogWarning("You cannot compare an item to itself!");
-            ClearInspectionSelection(); // Reset if they make a mistake
+            ClearInspectionSelection(); 
             return;
         }
 
         secondSelectedAttributes = new List<AttributeSO>(attributeData);
         secondSelectedItem = sourceItem;
-        // Debug.Log($"[Inspection] Second selection locked: {attributeData.displayName} from {sourceItem.gameObject.name}");
-
         EvaluateInspection();
     }
 
@@ -326,29 +299,19 @@ public class GuestItemManager : MonoBehaviour
 
     private void EvaluateInspection()
     {
-        // Default to unrelated until proven otherwise
         inspectionStatus = InspectionStatus.UNRELATED; 
 
         foreach(AttributeSO firstAttr in firstSelectedAttributes)
         {
             foreach(AttributeSO secondAttr in secondSelectedAttributes)
             {
-                // Only evaluate if they are the exact same category (e.g. Color vs Color)
                 if (firstAttr.category == secondAttr.category)
                 {
-                    if (firstAttr == secondAttr) 
-                    {
-                        inspectionStatus = InspectionStatus.MATCHED;
-                    }
-                    else
-                    {
-                        // The moment we find a mismatch in the same category, lock it in!
-                        inspectionStatus = InspectionStatus.MISMATCHED;  
-                    }
+                    if (firstAttr == secondAttr) inspectionStatus = InspectionStatus.MATCHED;
+                    else inspectionStatus = InspectionStatus.MISMATCHED;  
                 }
             }
         }
-        Debug.Log($"[Inspection] Result: {inspectionStatus}");
         ClearInspectionSelection();
     }
 
@@ -362,19 +325,13 @@ public class GuestItemManager : MonoBehaviour
     #endregion
 
     #region Debugging
-
     public void SpawnMask()
-    //Probably good idea to implement input parameters via text box or something
     {
         if (maskSOArray.Length > 0)
         {
             MaskSO randomMaskSO = maskSOArray[Random.Range(0, maskSOArray.Length)];
             GameObject newMask = SetupMask(randomMaskSO);
             activeItems.Add(newMask);
-        }
-        else
-        {
-            Debug.LogWarning("No MaskSOs assigned to GuestItemManager.");
         }
     }
 
@@ -391,18 +348,13 @@ public class GuestItemManager : MonoBehaviour
             TeleportUIElement(newGuest, -500f, 0f);
             StartCoroutine(MoveUIElement(newGuest, 0f, 0f, 3f));
         }
-        else
-        {
-            Debug.LogWarning("No GuestSOs assigned to GuestItemManager.");
-        }
     }
     #endregion
 
-    #region animations
+    #region Animations
     public void TeleportUIElement(GameObject teleportee, float xPos, float yPos)
     {
         RectTransform rect = teleportee.GetComponent<RectTransform>();
-
         rect.anchoredPosition = new Vector2(xPos, yPos);
         teleportUIDoneEvent.Invoke();
     }
@@ -410,7 +362,6 @@ public class GuestItemManager : MonoBehaviour
     public void TeleportUIElement(GameObject teleportee, RectTransform destinationTarget)
     {
         RectTransform rect = teleportee.GetComponent<RectTransform>();
-
         rect.anchoredPosition = destinationTarget.anchoredPosition;
         teleportUIDoneEvent.Invoke();
     }
@@ -425,15 +376,34 @@ public class GuestItemManager : MonoBehaviour
         while(timer < timeInSeconds)
         {
             moveeRect.anchoredPosition = Vector2.Lerp(startPos, targetPos, timer/timeInSeconds);
-
             timer += Time.deltaTime;
             yield return null;
         }
         moveUIDoneEvent.Invoke();
     }
-    /// Moves a UI element to a destination position over a specified time period.
-    //function assumes both destinationTarget and movee.GetComponent<RectTransform>() are using the same coordinate space (e.g. both are children of the same canvas)
-    public System.Collections.IEnumerator MoveUIElement(GameObject movee, RectTransform destinationTarget, float timeInSeconds)
+
+    public System.Collections.IEnumerator HopUIElement(GameObject movee, float xPos, float yPos, float timeInSeconds, int hops = 4, float hopHeight = 30f)
+    {
+        float timer = 0f;
+        RectTransform moveeRect = movee.GetComponent<RectTransform>();
+        Vector2 startPos = moveeRect.anchoredPosition;
+        Vector2 targetPos = new Vector2(xPos, yPos);
+
+        while(timer < timeInSeconds)
+        {
+            float progress = timer / timeInSeconds;
+            Vector2 basePos = Vector2.Lerp(startPos, targetPos, progress);
+            float hopOffset = Mathf.Abs(Mathf.Sin(progress * Mathf.PI * hops)) * hopHeight;
+            moveeRect.anchoredPosition = basePos + new Vector2(0, hopOffset);
+
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        moveeRect.anchoredPosition = targetPos;
+        moveUIDoneEvent.Invoke();
+    }
+
+    public System.Collections.IEnumerator HopUIElement(GameObject movee, RectTransform destinationTarget, float timeInSeconds, int hops = 4, float hopHeight = 30f)
     {
         float timer = 0f;
         RectTransform moveeRect = movee.GetComponent<RectTransform>();
@@ -442,50 +412,128 @@ public class GuestItemManager : MonoBehaviour
         while(timer < timeInSeconds)
         {
             Vector2 targetPos = destinationTarget.anchoredPosition;
+            float progress = timer / timeInSeconds;
 
-            moveeRect.anchoredPosition = Vector2.Lerp(startPos, targetPos, timer/timeInSeconds);
+            Vector2 basePos = Vector2.Lerp(startPos, targetPos, progress);
+            float hopOffset = Mathf.Abs(Mathf.Sin(progress * Mathf.PI * hops)) * hopHeight;
+
+            moveeRect.anchoredPosition = basePos + new Vector2(0, hopOffset);
+
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        
+        moveeRect.anchoredPosition = destinationTarget.anchoredPosition;
+        moveUIDoneEvent.Invoke();
+    }
+
+    public System.Collections.IEnumerator ShadowHopUIElement(GameObject movee, RectTransform destinationTarget, float timeInSeconds, int hops = 4, float hopHeight = 30f)
+    {
+        float timer = 0f;
+        RectTransform moveeRect = movee.GetComponent<RectTransform>();
+        
+        // Let ALL images (including buttons) fade naturally!
+        UnityEngine.UI.Image[] allImages = movee.GetComponentsInChildren<UnityEngine.UI.Image>();
+        
+        Vector2 startPos = moveeRect.anchoredPosition;
+        Vector2 targetPos = destinationTarget.anchoredPosition;
+
+        while(timer < timeInSeconds)
+        {
+            float progress = timer / timeInSeconds;
+            
+            Vector2 basePos = Vector2.Lerp(startPos, targetPos, progress);
+            float hopOffset = Mathf.Abs(Mathf.Sin(progress * Mathf.PI * hops)) * hopHeight;
+            moveeRect.anchoredPosition = basePos + new Vector2(0, hopOffset);
+
+            foreach(var img in allImages)
+            {
+                if (progress < 0.2f) img.color = Color.Lerp(new Color(0, 0, 0, 0), Color.black, progress / 0.2f);
+                else 
+                {
+                    float colorProgress = (progress - 0.2f) / 0.8f;
+                    img.color = Color.Lerp(Color.black, Color.white, colorProgress);
+                }
+            }
+
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        
+        moveeRect.anchoredPosition = targetPos;
+        foreach(var img in allImages) img.color = Color.white;
+        moveUIDoneEvent.Invoke();
+    }
+
+    public System.Collections.IEnumerator WalkForwardAndOutRoutine(GameObject movee, float timeInSeconds, int hops = 4, float hopHeight = 30f)
+    {
+        float timer = 0f;
+        RectTransform moveeRect = movee.GetComponent<RectTransform>();
+        
+        UnityEngine.UI.Image[] allImages = movee.GetComponentsInChildren<UnityEngine.UI.Image>();
+
+        Vector2 startPos = moveeRect.anchoredPosition;
+        Vector2 targetPos = startPos + new Vector2(0, -1000f); 
+        Vector3 startScale = moveeRect.localScale;
+        Vector3 targetScale = startScale * 1.5f;
+
+        while(timer < timeInSeconds)
+        {
+            float progress = timer / timeInSeconds;
+            
+            Vector2 basePos = Vector2.Lerp(startPos, targetPos, progress);
+            float hopOffset = Mathf.Abs(Mathf.Sin(progress * Mathf.PI * hops)) * hopHeight;
+            moveeRect.anchoredPosition = basePos + new Vector2(0, hopOffset);
+
+            moveeRect.localScale = Vector3.Lerp(startScale, targetScale, progress);
+
+            foreach(var img in allImages)
+            {
+                if (progress < 0.5f) img.color = Color.Lerp(Color.white, Color.black, progress / 0.5f);
+                else
+                {
+                    float alphaProgress = (progress - 0.5f) / 0.5f;
+                    img.color = Color.Lerp(Color.black, new Color(0, 0, 0, 0), alphaProgress);
+                }
+            }
+
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        
+        moveeRect.anchoredPosition = targetPos;
+        moveUIDoneEvent.Invoke();
+    }
+
+    public System.Collections.IEnumerator ScaleAndFadeRoutine(GameObject movee, float timeInSeconds)
+    {
+        float timer = 0f;
+        RectTransform moveeRect = movee.GetComponent<RectTransform>();
+        
+        UnityEngine.UI.Image[] allImages = movee.GetComponentsInChildren<UnityEngine.UI.Image>();
+
+        Vector3 startScale = moveeRect.localScale;
+        Vector3 targetScale = startScale * 1.5f;
+
+        while(timer < timeInSeconds)
+        {
+            float progress = timer / timeInSeconds;
+            moveeRect.localScale = Vector3.Lerp(startScale, targetScale, progress);
+
+            foreach(var img in allImages)
+            {
+                if (progress < 0.5f) img.color = Color.Lerp(Color.white, Color.black, progress / 0.5f);
+                else
+                {
+                    float alphaProgress = (progress - 0.5f) / 0.5f;
+                    img.color = Color.Lerp(Color.black, new Color(0, 0, 0, 0), alphaProgress);
+                }
+            }
 
             timer += Time.deltaTime;
             yield return null;
         }
         moveUIDoneEvent.Invoke();
     }
-
-    public System.Collections.IEnumerator ScaleUIElement(GameObject scalee, Vector3 endScale, float timeInSeconds)
-    {
-        float timer = 0f;
-        RectTransform rect = scalee.GetComponent<RectTransform>();
-        Vector3 startScale = rect.anchoredPosition;
-
-        while(timer < timeInSeconds)
-        {
-            rect.localScale = Vector3.Lerp(startScale, endScale, timer/timeInSeconds);
-
-            timer += Time.deltaTime;
-            yield return null;
-        }
-
-        scaleUIDoneEvent.Invoke();
-    }
-
-    public System.Collections.IEnumerator ColorUIElement(GameObject coloree, Color endColor, float timeInSeconds)
-    {
-        float timer = 0f;
-        Image im = coloree.GetComponent<Image>();
-        Color startColor = im.color;
-
-        while(timer < timeInSeconds)
-        {
-            im.color = Color.Lerp(startColor, endColor, timer/timeInSeconds);
-
-            timer += Time.deltaTime;
-            yield return null;
-        }
-
-        colorUIDoneEvent.Invoke();
-    }
-
-
-
     #endregion
 }

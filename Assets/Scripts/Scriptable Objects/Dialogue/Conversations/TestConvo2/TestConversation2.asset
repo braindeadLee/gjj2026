@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09b3a7537a54ec07d8ed6a2c3269c7f1, type: 3}
+  m_Name: TestConversation2
+  m_EditorClassIdentifier: Assembly-CSharp::ConversationSO
+  entryDialogue: {fileID: 11400000, guid: bd50ef081e2578056b1b920cb0aa5614, type: 2}
+  acceptDialogue: {fileID: 11400000, guid: 69c9f66aa09d96208b970f66730eb70a, type: 2}
+  rejectValidDialogue: {fileID: 11400000, guid: 41d13a4c65a15d3a98d2891968d87ed0, type: 2}
+  rejectInvalidDialogue: {fileID: 11400000, guid: fd33699e96dfcb5d9a5431d8b305dd53, type: 2}

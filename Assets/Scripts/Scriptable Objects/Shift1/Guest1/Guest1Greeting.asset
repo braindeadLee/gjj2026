@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a811a18d3b211d3caa4bb03b8ff2a35e, type: 3}
+  m_Name: Guest1Greeting
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueSO
+  conversationText: " -P- \nGood evening, my lord. Welcome to the gathering. \n\n-N-
+    \nBe quiet and just let me in \n\n-P- \nForgive me, sir... but I must check your
+    mask.\n\n-N-\n...\n\n-N-\nBe quick about it.\n\n\n-Greetings-\n-P-\nBlah blah
+    blah\n-N-\nUh yeah...\n\n-KickedOut-Peaceful-\n-P-\nGet out, respectfullly.\n"

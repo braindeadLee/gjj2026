@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5aea1c2af11972f47901bf6cfcd7f085, type: 3}
+  m_Name: Guest1
+  m_EditorClassIdentifier: Assembly-CSharp::GuestSO
+  guestName: Alexander
+  guestSprite: {fileID: 21300000, guid: a7be331f52f885cfbb125954f9a03de4, type: 3}
+  isLegit: 1
+  willFight: 0
+  conversation: {fileID: 11400000, guid: 9d0d962fbfb79b3b9bd1a27a88994111, type: 2}

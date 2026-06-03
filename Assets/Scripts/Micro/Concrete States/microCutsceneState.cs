@@ -8,24 +8,12 @@ public class MicroCutsceneState : MicroState
     {
         base.EnterState();
         
-        // 1. Lock the game UI so they can't play during the story
-        manager.inspectionUIPanel.SetActive(false);
+        // --- THE GOLDEN UI RULE ---
+        // 1. Turn OFF everything that isn't the Cutscene
+        if(manager.inspectionUIPanel != null) manager.inspectionUIPanel.SetActive(false);
+        if(manager.dialoguePanel != null) manager.dialoguePanel.SetActive(false);
 
-        // 2. Do we have a cutscene for today?
-        if (manager.currentDay < manager.dailyCutscenes.Length && manager.dailyCutscenes[manager.currentDay].sequenceImages.Length > 0)
-        {
-            manager.cutscenePanel.SetActive(true);
-            
-            // TODO: In the future, add your alpha fade-in coroutine here!
-            
-            // Load the first image
-            manager.cutsceneImageDisplay.sprite = manager.dailyCutscenes[manager.currentDay].sequenceImages[0];
-            manager.cutsceneImageDisplay.color = Color.white; // Ensure it's visible
-        }
-        else
-        {
-            // No cutscene for today? Skip straight to instructions!
-            stateMachine.ChangeState(manager.InstructionsState);
-        }
+        // 2. Tell the manager to figure out if there's a cutscene today and play it
+        manager.StartCutsceneForToday();
     }
 }

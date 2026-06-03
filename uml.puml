@@ -53,6 +53,7 @@ class MaskSO <<ItemSO>> {
     +AttributeSO color
     +AttributeSO quality
     +AttributeSO theme
+    +Vector3 scaleOffset
 }
 
 class SorSO <<ItemSO>> {
@@ -66,6 +67,7 @@ class GuestSO <<ScriptableObject>> {
     +Sprite guestSprite
     +bool isLegit
     +bool willFight
+    +ConversationSO conversation
 }
 
 class GuestlistSO <<ScriptableObject>> {
@@ -80,17 +82,28 @@ class GuestItemManager <<MonoBehaviour>> {
     +RectTransform itemsCanvas
     +RectTransform tablePanel
     +RectTransform guestsPanel
+    +RectTransform guestSpawnPosition
+    +RectTransform guestStandPosition
     +GameObject SetupMask(MaskSO maskSO, RectTransform parentPanel)
+    +void TransferMask()
+    +void TransferMaskBackToGuest()
     +GameObject SetupGuest(GuestSO guestSO, MaskSO maskSO)
     +GameObject SetupSOR(SorSO sorSO, RectTransform parentPanel)
     +GameObject SetupSOR(int index, RectTransform parentPanel)
     +void SelectAttributeForInspection(AttributeSO[] attributeData, Item sourceItem)
     +void SelectAttributeForInspection(AttributeSO attributeData, Item sourceItem)
+    +void ClearInspectionSelection()
     +void ToggleInspectionMode(bool value)
+    +void ToggleInspectionMode()
     +void TeleportUIElement(GameObject teleportee, float xPos, float yPos)
     +void TeleportUIElement(GameObject teleportee, RectTransform destinationTarget)
     +IEnumerator MoveUIElement(GameObject movee, float xPos, float yPos, float timeInSeconds)
     +IEnumerator MoveUIElement(GameObject movee, RectTransform destinationTarget, float timeInSeconds)
+    +IEnumerator HopUIElement(GameObject movee, float xPos, float yPos, float timeInSeconds, int hops, float hopHeight)
+    +IEnumerator HopUIElement(GameObject movee, RectTransform destinationTarget, float timeInSeconds, int hops, float hopHeight)
+    +IEnumerator ShadowHopUIElement(GameObject movee, RectTransform destinationTarget, float timeInSeconds, int hops, float hopHeight)
+    +IEnumerator WalkForwardAndOutRoutine(GameObject movee, float timeInSeconds, int hops, float hopHeight)
+    +IEnumerator ScaleAndFadeRoutine(GameObject movee, float timeInSeconds)
 }
 
 class Item <<MonoBehaviour>> {
@@ -98,18 +111,22 @@ class Item <<MonoBehaviour>> {
     +RectTransform rt
     +Canvas canvas
     +CanvasGroup canvasGroup
+    +virtual void Awake()
+    +virtual void Start()
     +virtual void Initialize(ItemSO itemSO)
     +void ToggleDraggable(bool value)
-    +void ToggleInspectable(bool value)
+    +virtual void ToggleInspectable(bool value)
 }
 
 class Item_Mask <<Item>> {
     +void Initialize(MaskSO maskSO)
+    +override void ToggleInspectable(bool value)
     +void maskAttributeZoneClicked()
 }
 
 class Item_SOR <<Item>> {
     +void Initialize(SorSO scrollSO)
+    +override void ToggleInspectable(bool value)
     +void ColorAttributeZoneClicked()
     +void QualityAttributeZoneClicked()
     +void ThemeAttributeZoneClicked()
@@ -122,6 +139,8 @@ class Guest <<MonoBehaviour>> {
 }
 
 class MicroManager <<MonoBehaviour>> {
+    +bool debugSkipCutscenes
+    +bool debugSkipInstructions
     +MicroStateMachine StateMachine
     +MicroCutsceneState CutsceneState
     +MicroInstructionsState InstructionsState
@@ -130,10 +149,20 @@ class MicroManager <<MonoBehaviour>> {
     +MicroDecisionState DecisionState
     +GuestItemManager guestItemManager
     +GuestlistSO[] guestListSO
+    +SorSO[] dailyRules
+    +CutsceneSO[] dailyCutscenes
+    +DialogueSO[] dailyDialogues
     +int currentDay
     +int currentGuest
+    +int currentLives
     +GameObject activeGuest
     +MaskSO activeMask
+    +TextMeshProUGUI mismatchFoundIndicatorText
+    +Color defaultMismatchColor
+    +Color triggeredMismatchColor
+    +bool lastDecisionWasApprove
+    +bool isMismatchProven
+    +bool hasSpawnedSORForToday
 }
 
 class MicroStateMachine {

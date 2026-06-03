@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
-
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,29 +9,20 @@ public class Item : MonoBehaviour, IDragHandler, IPointerDownHandler, IBeginDrag
     [HideInInspector] public GuestItemManager guestItemManager;
     protected Transform tr;
     protected Image im;
-    // public List<InspectionZone> inspectionZones;
     [HideInInspector] public RectTransform rt;
     [HideInInspector] public Canvas canvas;
-
     [HideInInspector] public CanvasGroup canvasGroup;
 
     private bool canDrag = false;
-
-    //not needed since inspection relies on button enabling anyways
-    // private bool canInspect = true;
-    // public ItemSO itemAssigned;
 
     public virtual void Awake()
     {
         tr = GetComponent<Transform>();
         im = GetComponent<Image>();
         rt = GetComponent<RectTransform>();
-        im.SetNativeSize();
-
         
         if (canvasGroup == null)
             canvasGroup = rt.GetComponent<CanvasGroup>();
-        
 
         if (canvas == null)
         {
@@ -56,35 +46,37 @@ public class Item : MonoBehaviour, IDragHandler, IPointerDownHandler, IBeginDrag
 
     public virtual void Initialize(ItemSO itemSO)
     {
-        if (itemSO != null)
+        if (im == null) im = GetComponent<Image>();
+        if (rt == null) rt = GetComponent<RectTransform>();
+
+        if (itemSO != null && itemSO.itemSprite != null)
         {
             im.sprite = itemSO.itemSprite;
-            im.SetNativeSize();
+            im.SetNativeSize(); 
         }
-        RectTransform rt = GetComponent<RectTransform>();
+
         rt.localScale = Vector3.one;
         rt.anchorMin = new Vector2(0.5f, 0.5f);
         rt.anchorMax = new Vector2(0.5f, 0.5f);
         rt.pivot = new Vector2(0.5f, 0.5f);
     }
     
-    #region Dragging Logic
+    #region Dragging & Inspection Logic
     public void ToggleDraggable(bool value) => canDrag = value;
 
-    public void ToggleInspectable (bool value)
+    // NEW: Made Virtual! Sub-classes will override this for guaranteed accuracy.
+    public virtual void ToggleInspectable (bool value)
     {
-        foreach (Button button in GetComponentsInChildren<Button>())
+        foreach (Button button in GetComponentsInChildren<Button>(true))
         {
-                button.enabled = value;
-                button.image.enabled = value;
+            button.gameObject.SetActive(value);
         }
     }
+
     public void OnDrag(PointerEventData eventData)
     {
         if (!canDrag) return;
-        {
-            rt.anchoredPosition += eventData.delta / canvas.scaleFactor;
-        }
+        rt.anchoredPosition += eventData.delta / canvas.scaleFactor;
     }
         
     public void OnPointerDown(PointerEventData eventData)

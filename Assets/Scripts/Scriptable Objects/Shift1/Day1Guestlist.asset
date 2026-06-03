@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b21e1c30faffd81d4bd809c643d682bf, type: 3}
+  m_Name: Day1Guestlist
+  m_EditorClassIdentifier: Assembly-CSharp::GuestlistSO
+  dayNumber: 0
+  guestList:
+  - mask: {fileID: 11400000, guid: 065d6bdfb090dadb38ed4dd8d3ed709a, type: 2}
+    guest: {fileID: 11400000, guid: eeb189062011e1e8eba4764f9e6d0655, type: 2}
+  - mask: {fileID: 11400000, guid: 76c2714cd558e4a9983f61f04fbbf5b6, type: 2}
+    guest: {fileID: 11400000, guid: f914455fb8143e60e87d9a1c85e5bac4, type: 2}
+  - mask: {fileID: 11400000, guid: 30168056f11d4725c8226b629cba630e, type: 2}
+    guest: {fileID: 11400000, guid: 4407a4f15a174d222a9916971de5a657, type: 2}
+  - mask: {fileID: 11400000, guid: 27bb5b331d4f9e3cfabadb9c6d914305, type: 2}
+    guest: {fileID: 11400000, guid: ace191222449ac2d2b40fa6ccb9ce58d, type: 2}
+  - mask: {fileID: 11400000, guid: 15f6a5c372668557fbe9890e9e444720, type: 2}
+    guest: {fileID: 11400000, guid: cc14e773a69158386be52e5d9fc0c82a, type: 2}
+  - mask: {fileID: 11400000, guid: c92199803d999fb048b4b75d43719e4d, type: 2}
+    guest: {fileID: 11400000, guid: b9e5c84c904cf3103a40f869e0f7ddcf, type: 2}

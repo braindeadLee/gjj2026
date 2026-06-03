@@ -20,19 +20,24 @@ public class Guest : MonoBehaviour
 
     public void Initialize(GuestSO guestSO)
     {
-        guestAssigned = guestSO;
-        im.sprite = guestAssigned.guestSprite;
+        // --- SURVIVAL PATCH ---
+        // If spawned into a disabled parent, Awake() is skipped. Force the fetch!
+        if (im == null) im = GetComponent<Image>();
+        if (tr == null) tr = GetComponent<RectTransform>();
 
-        if (guestSO != null)
+        guestAssigned = guestSO;
+
+        if (guestSO != null && guestSO.guestSprite != null)
         {
             im.sprite = guestSO.guestSprite;
-            im.SetNativeSize();
+            // DISABLED: Do not let raw PNG files override the Prefab's set size!
+            // im.SetNativeSize(); 
         }
-        RectTransform rt = GetComponent<RectTransform>();
-        rt.localScale = Vector3.one;
-        rt.anchorMin = new Vector2(0.5f, 0.5f);
-        rt.anchorMax = new Vector2(0.5f, 0.5f);
-        rt.pivot = new Vector2(0.5f, 0.5f);
+        
+        tr.localScale = Vector3.one;
+        tr.anchorMin = new Vector2(0.5f, 0.5f);
+        tr.anchorMax = new Vector2(0.5f, 0.5f);
+        tr.pivot = new Vector2(0.5f, 0.5f);
 
         Transform maskPin = transform.Find("MaskPin");
         if(maskPin != null)
@@ -41,7 +46,7 @@ public class Guest : MonoBehaviour
         }
         else
         {
-            maskPinRect = this.GetComponent<RectTransform>();
+            maskPinRect = tr;
             Debug.Log("Can't find designated Mask Pin, defaulting to parent object for mask pinning");
         }
     }

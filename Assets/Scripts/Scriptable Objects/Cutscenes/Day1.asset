@@ -13,7 +13,12 @@ MonoBehaviour:
   m_Name: Day1
   m_EditorClassIdentifier: Assembly-CSharp::CutsceneSO
   sequenceImages:
-  - {fileID: 21300000, guid: 92c421414f134eca89162b9c18e4a933, type: 3}
-  - {fileID: 21300000, guid: fdf3f65b713d9883fbfc962653b66638, type: 3}
-  - {fileID: 21300000, guid: 14d2b3f4ade5c5939ba746513248be5a, type: 3}
-  - {fileID: 21300000, guid: af4ec233bc6cd58eb8edcdedf639fe72, type: 3}
+  - {fileID: 21300000, guid: 5bc3cb617a700ef9cafecfeca4756bd2, type: 3}
+  - {fileID: 21300000, guid: ddf981ad6066a554e8260fc6d146363f, type: 3}
+  - {fileID: 21300000, guid: bdbeb9de83ac76b78813e64949ce5cc7, type: 3}
+  - {fileID: 21300000, guid: 4e5123e4010214b0182b64ee19244bdb, type: 3}
+  - {fileID: 21300000, guid: 22846c972f2a238bd957f79eac2e18c5, type: 3}
+  - {fileID: 21300000, guid: 0263d471903254a318e608829ae444b7, type: 3}
+  - {fileID: 21300000, guid: 7db86c50d0db8861bbf255d3e7f1d346, type: 3}
+  - {fileID: 21300000, guid: d18b495577707a60faedd129df5e75e1, type: 3}
+  DayToShow: 0

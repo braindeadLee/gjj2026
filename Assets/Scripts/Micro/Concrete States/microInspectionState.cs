@@ -2,25 +2,30 @@ using UnityEngine;
 
 public class MicroInspectionState : MicroState
 {
-    public MicroInspectionState(MicroManager manager, MicroStateMachine stateMachine) : base(manager, stateMachine)
-    {
-    }
+    public MicroInspectionState(MicroManager manager, MicroStateMachine stateMachine) : base(manager, stateMachine) { }
 
     public override void EnterState()
     {
         base.EnterState();
-        Debug.Log("Entered Inspection State");
+        GuestSO currentGuest = manager.guestListSO[manager.currentDay].guestList[manager.currentGuest].guest;
+        if (currentGuest.conversation != null)
+        {
+            manager.PlayInGameDialogue(currentGuest.conversation.entryDialogue);
+        }
     }
-    public override void ExitState()
-    {
-        base.ExitState();
-    }
+
     public override void UpdateState()
     {
         base.UpdateState();
-    }
-    public override void FixedUpdateState()
-    {
-        base.FixedUpdateState();
+        
+        // Locks in the proof and changes the text color to RED!
+        if (manager.guestItemManager.CurrentInspectionStatus == InspectionStatus.MISMATCHED)
+        {
+            manager.isMismatchProven = true; 
+            if (manager.mismatchFoundIndicatorText != null)
+            {
+                manager.mismatchFoundIndicatorText.color = manager.triggeredMismatchColor;
+            }
+        }
     }
 }
